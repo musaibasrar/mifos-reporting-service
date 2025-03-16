@@ -1,0 +1,232 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="clientRepo" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="64b167bd-febf-4f22-b41b-4282fbe3e189">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<dataset name="clientR" uuid="e3c9d14f-9010-4a43-8e44-fdc3bced494b">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
+		<query language="SQL"><![CDATA[SELECT DISTINCT 
+    o.name AS Office_Branch,
+    c.account_no AS Client_Account_No,
+    c.display_name AS Name,
+    CASE 
+        WHEN c.status_enum = 300 THEN 'Active'
+        ELSE 'Unknown'
+    END AS Status,
+    DATE_FORMAT(c.activation_date, '%Y-%m-%d') AS Activation_Date,
+    COALESCE(c.external_id, 'N/A') AS External_Id
+FROM 
+    m_client c
+JOIN 
+    m_office o ON c.office_id = o.id
+ORDER BY 
+    o.name, c.display_name;
+]]></query>
+		<field name="Office_Branch" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="name"/>
+			<property name="com.jaspersoft.studio.field.label" value="Office_Branch"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_office"/>
+		</field>
+		<field name="Client_Account_No" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="account_no"/>
+			<property name="com.jaspersoft.studio.field.label" value="Client_Account_No"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+		</field>
+		<field name="Name" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="display_name"/>
+			<property name="com.jaspersoft.studio.field.label" value="Name"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+		</field>
+		<field name="Status" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="Status"/>
+			<property name="com.jaspersoft.studio.field.label" value="Status"/>
+		</field>
+		<field name="Activation_Date" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="Activation_Date"/>
+			<property name="com.jaspersoft.studio.field.label" value="Activation_Date"/>
+		</field>
+		<field name="External_Id" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="External_Id"/>
+			<property name="com.jaspersoft.studio.field.label" value="External_Id"/>
+		</field>
+	</dataset>
+	<query language="SQL"><![CDATA[SELECT DISTINCT 
+    o.name AS Office_Branch,
+    c.account_no AS Client_Account_No,
+    c.display_name AS Name,
+    CASE 
+        WHEN c.status_enum = 300 THEN 'Active'
+        ELSE 'Unknown'
+    END AS Status,
+    DATE_FORMAT(c.activation_date, '%Y-%m-%d') AS Activation_Date,
+    COALESCE(c.external_id, 'N/A') AS External_Id
+FROM 
+    m_client c
+JOIN 
+    m_office o ON c.office_id = o.id
+ORDER BY 
+    o.name, c.display_name;
+]]></query>
+	<field name="Office_Branch" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="name"/>
+		<property name="com.jaspersoft.studio.field.label" value="Office_Branch"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_office"/>
+	</field>
+	<field name="Client_Account_No" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="account_no"/>
+		<property name="com.jaspersoft.studio.field.label" value="Client_Account_No"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+	</field>
+	<field name="Name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="display_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="Name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+	</field>
+	<field name="Status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Status"/>
+		<property name="com.jaspersoft.studio.field.label" value="Status"/>
+	</field>
+	<field name="Activation_Date" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Activation_Date"/>
+		<property name="com.jaspersoft.studio.field.label" value="Activation_Date"/>
+	</field>
+	<field name="External_Id" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="External_Id"/>
+		<property name="com.jaspersoft.studio.field.label" value="External_Id"/>
+	</field>
+	<background splitType="Stretch"/>
+	<summary height="338" splitType="Stretch">
+		<element kind="component" uuid="5ee6179f-db6f-4c9d-a4ba-d4c8119f5b22" x="100" y="60" width="200" height="160" backcolor="#FFD700">
+			<component kind="table">
+				<datasetRun uuid="bbc58edc-964e-401e-81ce-f4b4012f4665" subDataset="clientR">
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				</datasetRun>
+				<column kind="single" uuid="ec649237-ed06-458f-a684-ebe96e1bdebe" width="33">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="736cabf6-8166-4eff-a534-145d996b4596" x="0" y="0" width="33" height="30" fontName="SansSerif" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Office_Branch]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH">
+						<box style="Table_CH">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+					</columnFooter>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="2af33f72-8610-4126-bc70-2211ff997520" x="0" y="0" width="33" height="30" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[$F{Office_Branch}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="7161ee78-0d1f-4320-aa63-24e4a9afe6db" width="33">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="bcc496cb-2318-4903-bc72-168301f2b73b" x="0" y="0" width="33" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Client_Account_No]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="8f241f93-ab68-494a-ac03-956a3d26d667" x="0" y="0" width="33" height="30" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[$F{Client_Account_No}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="3a47321d-a908-4004-a895-00504872291c" width="33">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="2a1d19e5-9e64-4005-b157-5d284e912d8d" x="0" y="0" width="33" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Name]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="97354866-991c-4f4c-b8e6-864929b0318d" x="0" y="0" width="33" height="30" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[$F{Name}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="61a7d8f6-894a-4140-a9d4-bc5ad3fc15f4" width="33">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="f65b24ca-ca6f-401e-a1a2-41c8ad324168" x="0" y="0" width="33" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Status]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="7b22ebf8-a631-4d8b-904d-86737fe04cb7" x="0" y="0" width="33" height="30" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[$F{Status}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="825ba498-133f-4562-ba7a-26de7f207562" width="33">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="e33bf23c-016f-4e73-aa4b-a252ff96c019" x="0" y="0" width="33" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Activation_Date]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="b1599761-bfe3-471b-9af6-6d0ab19817b5" x="0" y="0" width="33" height="30" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[$F{Activation_Date}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="136df55c-ecde-4606-a443-6f5691950d35" width="33">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="52567a40-92fc-4b68-8fca-b537dd42018f" x="0" y="0" width="33" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[External_Id]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="51c5f1b5-96c8-4aed-b157-76216d5be27c" x="0" y="0" width="33" height="30" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[$F{External_Id}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+			</component>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+			<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+			<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+			<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+		</element>
+	</summary>
+</jasperReport>
