@@ -1,6 +1,6 @@
-package com.howtodoinjava.app.jasper;
+package org.ideoholic.mrs.jasper;
 
-import com.howtodoinjava.app.model.Item;
+import org.ideoholic.mrs.model.Item;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
