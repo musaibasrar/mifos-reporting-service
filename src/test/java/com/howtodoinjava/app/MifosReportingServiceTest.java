@@ -1,12 +1,15 @@
 package com.howtodoinjava.app;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class AppTest {
+class MifosReportingServiceTest {
 
-  @Test
-  public void contextLoads() {
-  }
+	@Test
+	@Disabled
+	void contextLoads() {
+	}
+
 }

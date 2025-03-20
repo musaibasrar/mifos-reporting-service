@@ -1,7 +1,7 @@
-package com.howtodoinjava.app.web;
+package org.ideoholic.mrs.web;
 
-import com.howtodoinjava.app.dao.ItemRepository;
-import com.howtodoinjava.app.jasper.JasperReportService;
+import org.ideoholic.mrs.dao.ItemRepository;
+import org.ideoholic.mrs.jasper.JasperReportService;
 import java.io.IOException;
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
