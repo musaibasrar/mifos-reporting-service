@@ -1,0 +1,300 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="Active_Loans_listing" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="82d7982e-0e5f-4cee-ab3e-2adbe65f1c05">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<dataset name="ActiveLoans" uuid="aa69e290-993b-4c04-b739-0623b397a62d">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
+		<parameter name="currentUserHierarchy" class="java.lang.String"/>
+		<query language="SQL"><![CDATA[SELECT 
+    COALESCE(mo.name, 'Unknown') AS Branch,
+    COALESCE(mc.display_name, 'Unknown') AS Name,
+    COALESCE(mc.mobile_no, 'Unknown') AS `Mobile No.`,
+    ml.account_no AS `Loan Account No.`,
+    COALESCE(mp.name, 'Unknown') AS Product,
+    ml.principal_amount AS `Loan Amount`,
+    ml.disbursedon_date AS `Disbursed Date`,
+    ml.principal_repaid_derived AS `Principal Repaid`,
+    ml.principal_outstanding_derived AS `Principal Outstanding`
+FROM m_loan ml
+LEFT JOIN m_client mc ON ml.client_id = mc.id
+LEFT JOIN m_office mo ON mc.office_id = mo.id
+LEFT JOIN m_product_loan mp ON ml.product_id = mp.id
+WHERE mo.hierarchy LIKE '$P{currentUserHierarchy}%'
+ORDER BY mo.name, mc.display_name;
+
+
+]]></query>
+		<field name="Branch" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="Branch"/>
+			<property name="com.jaspersoft.studio.field.label" value="Branch"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_office"/>
+		</field>
+		<field name="Name" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="Name"/>
+			<property name="com.jaspersoft.studio.field.label" value="Name"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+		</field>
+		<field name="Mobile No." class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="Mobile No."/>
+			<property name="com.jaspersoft.studio.field.label" value="Mobile No."/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+		</field>
+		<field name="Loan Account No." class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="account_no"/>
+			<property name="com.jaspersoft.studio.field.label" value="Loan Account No."/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_loan"/>
+		</field>
+		<field name="Product" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="Product"/>
+			<property name="com.jaspersoft.studio.field.label" value="Product"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_product_loan"/>
+		</field>
+		<field name="Loan Amount" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="principal_amount"/>
+			<property name="com.jaspersoft.studio.field.label" value="Loan Amount"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_loan"/>
+		</field>
+		<field name="Disbursed Date" class="java.sql.Date">
+			<property name="com.jaspersoft.studio.field.name" value="disbursedon_date"/>
+			<property name="com.jaspersoft.studio.field.label" value="Disbursed Date"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_loan"/>
+		</field>
+		<field name="Principal Repaid" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="principal_repaid_derived"/>
+			<property name="com.jaspersoft.studio.field.label" value="Principal Repaid"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_loan"/>
+		</field>
+		<field name="Principal Outstanding" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="principal_outstanding_derived"/>
+			<property name="com.jaspersoft.studio.field.label" value="Principal Outstanding"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_loan"/>
+		</field>
+	</dataset>
+	<parameter name="currentUserHierarchy" class="java.lang.String"/>
+	<query language="SQL"><![CDATA[SELECT 
+    COALESCE(mo.name, 'Unknown') AS Branch,
+    COALESCE(mc.display_name, 'Unknown') AS Name,
+    COALESCE(mc.mobile_no, 'Unknown') AS `Mobile No.`,
+    ml.account_no AS `Loan Account No.`,
+    COALESCE(mp.name, 'Unknown') AS Product,
+    ml.principal_amount AS `Loan Amount`,
+    ml.disbursedon_date AS `Disbursed Date`,
+    ml.principal_repaid_derived AS `Principal Repaid`,
+    ml.principal_outstanding_derived AS `Principal Outstanding`
+FROM m_loan ml
+LEFT JOIN m_client mc ON ml.client_id = mc.id
+LEFT JOIN m_office mo ON mc.office_id = mo.id
+LEFT JOIN m_product_loan mp ON ml.product_id = mp.id
+WHERE mo.hierarchy LIKE '$P{currentUserHierarchy}%'
+ORDER BY mo.name, mc.display_name;
+
+
+
+
+
+                ]]></query>
+	<field name="Branch" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Branch"/>
+		<property name="com.jaspersoft.studio.field.label" value="Branch"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_office"/>
+	</field>
+	<field name="Name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Name"/>
+		<property name="com.jaspersoft.studio.field.label" value="Name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+	</field>
+	<field name="Mobile No." class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Mobile No."/>
+		<property name="com.jaspersoft.studio.field.label" value="Mobile No."/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+	</field>
+	<field name="Loan Account No." class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="account_no"/>
+		<property name="com.jaspersoft.studio.field.label" value="Loan Account No."/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_loan"/>
+	</field>
+	<field name="Product" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Product"/>
+		<property name="com.jaspersoft.studio.field.label" value="Product"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_product_loan"/>
+	</field>
+	<field name="Loan Amount" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="principal_amount"/>
+		<property name="com.jaspersoft.studio.field.label" value="Loan Amount"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_loan"/>
+	</field>
+	<field name="Disbursed Date" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="disbursedon_date"/>
+		<property name="com.jaspersoft.studio.field.label" value="Disbursed Date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_loan"/>
+	</field>
+	<field name="Principal Repaid" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="principal_repaid_derived"/>
+		<property name="com.jaspersoft.studio.field.label" value="Principal Repaid"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_loan"/>
+	</field>
+	<field name="Principal Outstanding" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="principal_outstanding_derived"/>
+		<property name="com.jaspersoft.studio.field.label" value="Principal Outstanding"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_loan"/>
+	</field>
+	<background splitType="Stretch"/>
+	<summary height="280" splitType="Stretch">
+		<element kind="component" uuid="9bbcb999-be7d-4d1c-aa96-9df5d746dc0e" x="-10" y="0" width="570" height="60" backcolor="#FF3333" style="Table_TD">
+			<component kind="table">
+				<datasetRun uuid="f6e4076e-722c-49a0-a574-cdda26af91c7" subDataset="ActiveLoans">
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				</datasetRun>
+				<column kind="single" uuid="04973e3a-0929-4479-9ad9-aad7d26940bd" width="50">
+					<columnHeader height="30" rowSpan="1" style="Table_CH">
+						<element kind="staticText" uuid="5828fcb3-6880-4a5d-a30b-7166e41f1b08" x="0" y="0" width="50" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Branch]]></text>
+						</element>
+					</columnHeader>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="49b29ba1-6414-45fe-ae38-4db5cc6fe624" x="0" y="0" width="50" height="30" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[$F{Branch}]]></expression>
+						</element>
+					</detailCell>
+					<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+				</column>
+				<column kind="single" uuid="2b67ff5d-3926-4322-aeaa-d9a1d160cce5" width="66">
+					<columnHeader height="30" rowSpan="1" style="Table_CH">
+						<element kind="staticText" uuid="2463f6db-3da8-425d-b309-1512073e89ea" x="0" y="0" width="66" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Name]]></text>
+						</element>
+					</columnHeader>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="0667bb72-c088-43a5-932f-8bdd18a28874" x="0" y="0" width="66" height="30" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[$F{Name}]]></expression>
+						</element>
+					</detailCell>
+					<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+				</column>
+				<column kind="single" uuid="f37e683c-c833-4cac-abea-ffe1eb027264" width="66">
+					<columnHeader height="30" rowSpan="1" style="Table_CH">
+						<element kind="staticText" uuid="b9e6d8bb-c2dc-4579-adf6-0cd682e4fbe6" x="0" y="0" width="66" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Mobile No.]]></text>
+						</element>
+					</columnHeader>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="4cce1e1a-a09f-40ae-b21b-414d685f8066" x="0" y="0" width="66" height="30" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[$F{Mobile No.}]]></expression>
+						</element>
+					</detailCell>
+					<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+				</column>
+				<column kind="single" uuid="a8ff1c5a-8c2d-4764-87f5-960eacf72e4b" width="66">
+					<columnHeader height="30" rowSpan="1" style="Table_CH">
+						<element kind="staticText" uuid="f45867df-ee97-474e-8855-1208d34cd30d" x="0" y="0" width="66" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Loan Account No.]]></text>
+						</element>
+					</columnHeader>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="c6657087-26ca-46a1-8d53-9c9d334ec8da" x="0" y="0" width="66" height="30" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[$F{Loan Account No.}]]></expression>
+						</element>
+					</detailCell>
+					<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+				</column>
+				<column kind="single" uuid="fd831983-1dc1-46ab-a245-aea1b9562c23" width="66">
+					<columnHeader height="30" rowSpan="1" style="Table_CH">
+						<element kind="staticText" uuid="a9f07d52-a77e-4aa9-ac17-50e75d945a99" x="0" y="0" width="66" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Product]]></text>
+						</element>
+					</columnHeader>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="b21bfb7e-2b0a-41b3-9edd-6f2a52a439eb" x="0" y="0" width="66" height="30" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[$F{Product}]]></expression>
+						</element>
+					</detailCell>
+					<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+				</column>
+				<column kind="single" uuid="39a2dec4-2848-49fb-affe-953d8334bac0" width="66">
+					<columnHeader height="30" rowSpan="1" style="Table_CH">
+						<element kind="staticText" uuid="1de35c90-0917-463b-8b0a-ecf3b2264d1c" x="0" y="0" width="66" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Loan Amount]]></text>
+						</element>
+					</columnHeader>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="7dab02c5-9ee7-49a0-ba5d-d76de743069b" x="0" y="0" width="66" height="30" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[$F{Loan Amount}]]></expression>
+						</element>
+					</detailCell>
+					<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+				</column>
+				<column kind="single" uuid="127caeac-6e17-4cb6-8ee3-2e0d67cba83b" width="66">
+					<columnHeader height="30" rowSpan="1" style="Table_CH">
+						<element kind="staticText" uuid="f968bbe6-f8a1-41cf-a225-75e751295e60" x="0" y="0" width="66" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Disbursed Date]]></text>
+						</element>
+					</columnHeader>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="634e63f9-ffbe-4e67-93d6-8b044ed511b3" x="0" y="0" width="66" height="30" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[$F{Disbursed Date}]]></expression>
+						</element>
+					</detailCell>
+					<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
+				</column>
+				<column kind="single" uuid="1fba6fba-2c10-4ba6-a680-03739c585f98" width="64">
+					<columnHeader height="30" rowSpan="1" style="Table_CH">
+						<element kind="staticText" uuid="fb653dc1-7cea-4a80-abdf-971c512a9715" x="0" y="0" width="64" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Principal Repaid]]></text>
+						</element>
+					</columnHeader>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="9fb3f4c1-a311-47d2-947e-49f52179b585" x="0" y="0" width="64" height="30" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[$F{Principal Repaid}]]></expression>
+						</element>
+					</detailCell>
+					<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+				</column>
+				<column kind="single" uuid="22d65763-9b38-4aa7-8e68-fcd705a347f5" width="60">
+					<columnHeader height="30" rowSpan="1" style="Table_CH">
+						<element kind="staticText" uuid="953c0cf0-f996-4198-8a94-851bbb1b3ee1" x="0" y="0" width="60" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+							<text><![CDATA[Principal Outstanding]]></text>
+						</element>
+					</columnHeader>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="213328a7-bcc9-485d-9bfc-5f0822c6b0d9" x="0" y="0" width="60" height="30" hTextAlign="Center" vTextAlign="Middle">
+							<expression><![CDATA[$F{Principal Outstanding}]]></expression>
+						</element>
+					</detailCell>
+					<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
+				</column>
+			</component>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+			<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+			<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+			<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+		</element>
+	</summary>
+</jasperReport>
