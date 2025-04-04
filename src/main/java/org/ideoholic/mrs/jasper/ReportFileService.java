@@ -46,11 +46,12 @@ public class ReportFileService {
 				.build();
 	}
 	
-	public ReportDto updateReport(ReportDto reportDto) {
+	public ReportDto updateReport(Long reportId, ReportDto reportDto) {
 		// First fetch to ensure that the report exists
-		Report report = reportRepository.findById(reportDto.getReportId()).orElseThrow();
+		Report report = reportRepository.findById(reportId).orElseThrow();
 		
-		report = reportMapper.mapReportDto(reportDto);
+		reportMapper.updateReport(report, reportDto);
+		
 		reportRepository.save(report);
 		
 		return reportMapper.mapReport(report);
