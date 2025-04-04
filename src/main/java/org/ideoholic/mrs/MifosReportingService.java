@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+/**
+ * Springdoc OpenAPI documentation: http://localhost:8080/swagger-ui.html
+ * OpenAPI specification (in JSON format): http://localhost:8080/v3/api-docs
+ */
 @SpringBootApplication
 public class MifosReportingService implements CommandLineRunner {
 
