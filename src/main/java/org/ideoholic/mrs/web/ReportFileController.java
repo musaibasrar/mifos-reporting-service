@@ -24,7 +24,7 @@ public interface ReportFileController {
 
     @Operation(summary = "Create report", description = "Creates a Report that maps a user-friendly report file name to the Jasper report file")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Successfully created the report file"),
+        @ApiResponse(responseCode = "201", description = "Successfully created the report file"),
         @ApiResponse(responseCode = "400", description = "Bad Request")
     })
 	@PostMapping
