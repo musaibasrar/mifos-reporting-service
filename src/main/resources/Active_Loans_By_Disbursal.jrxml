@@ -59,11 +59,6 @@
 	<dataset name="ActiveLoansDataset" uuid="ddd7696d-daf5-4007-b628-13844319492c">
 		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
-		<parameter name="currentUserHierarchy" class="java.lang.String">
-			<defaultValueExpression><![CDATA[$P{currentUserHierarchy}
-
-]]></defaultValueExpression>
-		</parameter>
 		<parameter name="officeId" class="java.lang.Integer">
 			<defaultValueExpression><![CDATA[$P{officeId}
 ]]></defaultValueExpression>
@@ -87,10 +82,7 @@
 			<defaultValueExpression><![CDATA[$P{endDate}
 ]]></defaultValueExpression>
 		</parameter>
-		<query language="SQL"><![CDATA[
-SELECT 
-    CONCAT(REPEAT("..", (LENGTH(ounder.hierarchy) - LENGTH(REPLACE(ounder.hierarchy, '.', '')) - 1))), ounder.name AS "Office/Branch",
-    IFNULL(cur.display_symbol, l.currency_code) AS "Currency",
+		<query language="SQL"><![CDATA[SELECT 
     c.account_no AS "Client Account No",
     c.display_name AS "Client",
     l.account_no AS "Loan Account No",
@@ -103,36 +95,23 @@ SELECT
     l.total_repayment_derived AS "Total Repaid (P+I+F+Pen)",
     lo.display_name AS "Loan Officer"
 FROM m_office o
-JOIN m_office ounder ON ounder.hierarchy LIKE CONCAT(o.hierarchy, '%')
-AND ounder.hierarchy LIKE CONCAT($P{currentUserHierarchy}, '%')
-JOIN m_client c ON c.office_id = ounder.id
+JOIN m_client c ON c.office_id = o.id
 JOIN m_loan l ON l.client_id = c.id
 JOIN m_product_loan pl ON pl.id = l.product_id
 LEFT JOIN m_staff lo ON lo.id = l.loan_officer_id  
 LEFT JOIN m_currency cur ON cur.code = l.currency_code
 LEFT JOIN m_fund f ON f.id = l.fund_id
 LEFT JOIN m_loan_arrears_aging laa ON laa.loan_id = l.id
-WHERE o.id = $P{officeId}
-AND (l.product_id = $P{loanProductId} OR "-1" = $P{loanProductId})
-AND (IFNULL(l.loan_officer_id, -10) = $P{loanOfficerId} OR "-1" = $P{loanOfficerId})
-AND l.disbursedon_date BETWEEN $P{startDate} AND $P{endDate}
-AND l.loan_status_id = 300
+WHERE 
+    o.id = $P{officeId}
+    AND (l.product_id = $P{loanProductId} OR "-1" = $P{loanProductId})
+    AND (IFNULL(l.loan_officer_id, -10) = $P{loanOfficerId} OR "-1" = $P{loanOfficerId})
+    AND l.disbursedon_date BETWEEN $P{startDate} AND $P{endDate}
+    AND l.loan_status_id = 300
 GROUP BY l.id
-ORDER BY ounder.hierarchy, l.currency_code, c.account_no, l.account_no;
+ORDER BY l.currency_code, c.account_no, l.account_no;
+
 ]]></query>
-		<field name="CONCAT(REPEAT(&quot;..&quot;, (LENGTH(ounder.hierarchy) - LENGTH(REPLACE(ounder.hierarchy, '.', '')) - 1)))" class="java.lang.String">
-			<property name="com.jaspersoft.studio.field.name" value="CONCAT(REPEAT(&quot;..&quot;, (LENGTH(ounder.hierarchy) - LENGTH(REPLACE(ounder.hierarchy, '.', '')) - 1)))"/>
-			<property name="com.jaspersoft.studio.field.label" value="CONCAT(REPEAT(&quot;..&quot;, (LENGTH(ounder.hierarchy) - LENGTH(REPLACE(ounder.hierarchy, '.', '')) - 1)))"/>
-		</field>
-		<field name="Office/Branch" class="java.lang.String">
-			<property name="com.jaspersoft.studio.field.name" value="name"/>
-			<property name="com.jaspersoft.studio.field.label" value="Office/Branch"/>
-			<property name="com.jaspersoft.studio.field.tree.path" value="m_office"/>
-		</field>
-		<field name="Currency" class="java.lang.String">
-			<property name="com.jaspersoft.studio.field.name" value="Currency"/>
-			<property name="com.jaspersoft.studio.field.label" value="Currency"/>
-		</field>
 		<field name="Client Account No" class="java.lang.String">
 			<property name="com.jaspersoft.studio.field.name" value="account_no"/>
 			<property name="com.jaspersoft.studio.field.label" value="Client Account No"/>
@@ -188,10 +167,6 @@ ORDER BY ounder.hierarchy, l.currency_code, c.account_no, l.account_no;
 			<property name="com.jaspersoft.studio.field.tree.path" value="m_staff"/>
 		</field>
 	</dataset>
-	<parameter name="currentUserHierarchy" class="java.lang.String">
-		<defaultValueExpression><![CDATA[$P{currentUserHierarchy}
-]]></defaultValueExpression>
-	</parameter>
 	<parameter name="officeId" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[$P{officeId}]]></defaultValueExpression>
 	</parameter>
@@ -208,8 +183,6 @@ ORDER BY ounder.hierarchy, l.currency_code, c.account_no, l.account_no;
 		<defaultValueExpression><![CDATA[$P{endDate}]]></defaultValueExpression>
 	</parameter>
 	<query language="SQL"><![CDATA[SELECT 
-    CONCAT(REPEAT("..", (LENGTH(ounder.hierarchy) - LENGTH(REPLACE(ounder.hierarchy, '.', '')) - 1))), ounder.name AS "Office/Branch",
-    IFNULL(cur.display_symbol, l.currency_code) AS "Currency",
     c.account_no AS "Client Account No",
     c.display_name AS "Client",
     l.account_no AS "Loan Account No",
@@ -222,36 +195,23 @@ ORDER BY ounder.hierarchy, l.currency_code, c.account_no, l.account_no;
     l.total_repayment_derived AS "Total Repaid (P+I+F+Pen)",
     lo.display_name AS "Loan Officer"
 FROM m_office o
-JOIN m_office ounder ON ounder.hierarchy LIKE CONCAT(o.hierarchy, '%')
-AND ounder.hierarchy LIKE CONCAT($P{currentUserHierarchy}, '%')
-JOIN m_client c ON c.office_id = ounder.id
+JOIN m_client c ON c.office_id = o.id
 JOIN m_loan l ON l.client_id = c.id
 JOIN m_product_loan pl ON pl.id = l.product_id
 LEFT JOIN m_staff lo ON lo.id = l.loan_officer_id  
 LEFT JOIN m_currency cur ON cur.code = l.currency_code
 LEFT JOIN m_fund f ON f.id = l.fund_id
 LEFT JOIN m_loan_arrears_aging laa ON laa.loan_id = l.id
-WHERE o.id = $P{officeId}
-AND (l.product_id = $P{loanProductId} OR "-1" = $P{loanProductId})
-AND (IFNULL(l.loan_officer_id, -10) = $P{loanOfficerId} OR "-1" = $P{loanOfficerId})
-AND l.disbursedon_date BETWEEN $P{startDate} AND $P{endDate}
-AND l.loan_status_id = 300
+WHERE 
+    o.id = $P{officeId}
+    AND (l.product_id = $P{loanProductId} OR "-1" = $P{loanProductId})
+    AND (IFNULL(l.loan_officer_id, -10) = $P{loanOfficerId} OR "-1" = $P{loanOfficerId})
+    AND l.disbursedon_date BETWEEN $P{startDate} AND $P{endDate}
+    AND l.loan_status_id = 300
 GROUP BY l.id
-ORDER BY ounder.hierarchy, l.currency_code, c.account_no, l.account_no;
+ORDER BY l.currency_code, c.account_no, l.account_no;
+
 ]]></query>
-	<field name="CONCAT(REPEAT(&quot;..&quot;, (LENGTH(ounder.hierarchy) - LENGTH(REPLACE(ounder.hierarchy, '.', '')) - 1)))" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="CONCAT(REPEAT(&quot;..&quot;, (LENGTH(ounder.hierarchy) - LENGTH(REPLACE(ounder.hierarchy, '.', '')) - 1)))"/>
-		<property name="com.jaspersoft.studio.field.label" value="CONCAT(REPEAT(&quot;..&quot;, (LENGTH(ounder.hierarchy) - LENGTH(REPLACE(ounder.hierarchy, '.', '')) - 1)))"/>
-	</field>
-	<field name="Office/Branch" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="name"/>
-		<property name="com.jaspersoft.studio.field.label" value="Office/Branch"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="m_office"/>
-	</field>
-	<field name="Currency" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="Currency"/>
-		<property name="com.jaspersoft.studio.field.label" value="Currency"/>
-	</field>
 	<field name="Client Account No" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="account_no"/>
 		<property name="com.jaspersoft.studio.field.label" value="Client Account No"/>
@@ -307,220 +267,174 @@ ORDER BY ounder.hierarchy, l.currency_code, c.account_no, l.account_no;
 		<property name="com.jaspersoft.studio.field.tree.path" value="m_staff"/>
 	</field>
 	<background splitType="Stretch"/>
-	<title height="44" splitType="Stretch"/>
 	<detail>
 		<band height="405" splitType="Stretch">
-			<element kind="component" uuid="d67ee086-7574-42a9-ae2c-2cbc3c74586f" x="-20" y="80" width="590" height="240">
+			<element kind="component" uuid="72a885b6-c0bd-44ea-a7b9-33316096f531" x="-10" y="149" width="580" height="200">
 				<component kind="table">
-					<datasetRun uuid="9a5742e7-36e5-4fca-8679-effee8fe0a44" subDataset="ActiveLoansDataset">
+					<datasetRun uuid="803533b2-a075-4641-96ad-d3218b00ded1" subDataset="ActiveLoansDataset">
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<column kind="single" uuid="2e116caf-c1bf-4176-aef9-66eb50f51cb5" width="50">
+					<column kind="single" uuid="5c262d50-198a-4379-9c76-0b4814a27bc6" width="50">
 						<tableHeader height="30" style="Table 1_TH"/>
 						<tableFooter height="30" style="Table 1_TH"/>
 						<columnHeader height="30" style="Table 1_CH">
-							<element kind="staticText" uuid="93ba9140-39f2-478b-8403-7488619fe803" x="0" y="0" width="50" height="30">
-								<text><![CDATA[CONCAT(REPEAT("..", (LENGTH(ounder.hierarchy) - LENGTH(REPLACE(ounder.hierarchy, '.', '')) - 1)))]]></text>
-							</element>
-						</columnHeader>
-						<columnFooter height="30" style="Table 1_CH"/>
-						<detailCell height="30" style="Table 1_TD">
-							<element kind="textField" uuid="ddde890f-529f-409b-87ee-3a67ade89947" x="0" y="0" width="50" height="30">
-								<expression><![CDATA[$F{CONCAT(REPEAT("..", (LENGTH(ounder.hierarchy) - LENGTH(REPLACE(ounder.hierarchy, '.', '')) - 1)))}]]></expression>
-							</element>
-						</detailCell>
-					</column>
-					<column kind="single" uuid="6e5ccf6b-d440-4a4d-bb0b-7bcf4724a0ae" width="50">
-						<tableHeader height="30" style="Table 1_TH"/>
-						<tableFooter height="30" style="Table 1_TH"/>
-						<columnHeader height="30" style="Table 1_CH">
-							<element kind="staticText" uuid="5790a311-6730-4e39-bc95-fd01207bfb93" x="0" y="0" width="50" height="30">
-								<text><![CDATA[Office/Branch]]></text>
-							</element>
-						</columnHeader>
-						<columnFooter height="30" style="Table 1_CH"/>
-						<detailCell height="30" style="Table 1_TD">
-							<element kind="textField" uuid="64c37d79-2a89-4966-a98f-557fad308c17" x="0" y="0" width="50" height="30">
-								<expression><![CDATA[$F{Office/Branch}]]></expression>
-							</element>
-						</detailCell>
-					</column>
-					<column kind="single" uuid="cd1a3444-cb7a-44f0-9675-e8a7d95741ad" width="42">
-						<tableHeader height="30" style="Table 1_TH"/>
-						<tableFooter height="30" style="Table 1_TH"/>
-						<columnHeader height="30" style="Table 1_CH">
-							<element kind="staticText" uuid="9e908805-c083-45da-9bf0-e5ebaa966b30" x="0" y="0" width="42" height="30">
-								<text><![CDATA[Currency]]></text>
-							</element>
-						</columnHeader>
-						<columnFooter height="30" style="Table 1_CH"/>
-						<detailCell height="30" style="Table 1_TD">
-							<element kind="textField" uuid="544c22ff-3012-4376-9687-a4c4fa203eca" x="0" y="0" width="42" height="30">
-								<expression><![CDATA[$F{Currency}]]></expression>
-							</element>
-						</detailCell>
-					</column>
-					<column kind="single" uuid="4455b563-aa97-4261-9960-f0b1c797fb05" width="38">
-						<tableHeader height="30" style="Table 1_TH"/>
-						<tableFooter height="30" style="Table 1_TH"/>
-						<columnHeader height="30" style="Table 1_CH">
-							<element kind="staticText" uuid="3caf6897-7faa-465b-bae7-f851f465741d" x="0" y="0" width="38" height="30">
+							<element kind="staticText" uuid="e9e8fea0-98a3-4519-8107-324fe261dcc4" x="0" y="0" width="50" height="30">
 								<text><![CDATA[Client Account No]]></text>
 							</element>
 						</columnHeader>
 						<columnFooter height="30" style="Table 1_CH"/>
 						<detailCell height="30" style="Table 1_TD">
-							<element kind="textField" uuid="32f5f699-210f-4ebc-80a9-6ec16bac51f9" x="0" y="0" width="38" height="30">
+							<element kind="textField" uuid="701c01d1-01b2-435f-9cbe-6e196a645d35" x="0" y="0" width="50" height="30">
 								<expression><![CDATA[$F{Client Account No}]]></expression>
 							</element>
 						</detailCell>
 					</column>
-					<column kind="single" uuid="62a58d47-7dbd-4702-8690-1d173691a90a" width="44">
+					<column kind="single" uuid="d9c5459f-e7ae-4f88-8ef6-8d3fd4b20653" width="50">
 						<tableHeader height="30" style="Table 1_TH"/>
 						<tableFooter height="30" style="Table 1_TH"/>
 						<columnHeader height="30" style="Table 1_CH">
-							<element kind="staticText" uuid="337546f3-025d-4a50-8904-0452b88756d1" x="0" y="0" width="44" height="30">
+							<element kind="staticText" uuid="8e08fefa-a14f-406c-9e4d-6a49af959f15" x="0" y="0" width="50" height="30">
 								<text><![CDATA[Client]]></text>
 							</element>
 						</columnHeader>
 						<columnFooter height="30" style="Table 1_CH"/>
 						<detailCell height="30" style="Table 1_TD">
-							<element kind="textField" uuid="23ae0b81-5431-44fe-9b26-24a8a8b6faf6" x="0" y="0" width="44" height="30">
+							<element kind="textField" uuid="f3375a9f-99da-4ba6-ae6d-cae17fb057b5" x="0" y="0" width="50" height="30">
 								<expression><![CDATA[$F{Client}]]></expression>
 							</element>
 						</detailCell>
 					</column>
-					<column kind="single" uuid="95ef2522-eb02-465a-9fd4-b669aab3ae13" width="40">
+					<column kind="single" uuid="f8d9377c-8196-4793-b696-3bfe83beb34d" width="50">
 						<tableHeader height="30" style="Table 1_TH"/>
 						<tableFooter height="30" style="Table 1_TH"/>
 						<columnHeader height="30" style="Table 1_CH">
-							<element kind="staticText" uuid="1f114c51-f36a-44f9-a76c-633645074baf" x="0" y="0" width="40" height="30">
+							<element kind="staticText" uuid="b59a4205-79b0-41d8-a907-adeafb1713b7" x="0" y="0" width="50" height="30">
 								<text><![CDATA[Loan Account No]]></text>
 							</element>
 						</columnHeader>
 						<columnFooter height="30" style="Table 1_CH"/>
 						<detailCell height="30" style="Table 1_TD">
-							<element kind="textField" uuid="8e87a0c8-5276-4227-8aae-990f2b8cf617" x="0" y="0" width="40" height="30">
+							<element kind="textField" uuid="181f456d-8a4c-4fbf-b11b-5a23e998c47a" x="0" y="0" width="50" height="30">
 								<expression><![CDATA[$F{Loan Account No}]]></expression>
 							</element>
 						</detailCell>
 					</column>
-					<column kind="single" uuid="a347232f-1311-4671-86db-07e948a9496a" width="46">
+					<column kind="single" uuid="d111ed65-ee11-4d70-8bb3-bcaa0bb0059e" width="50">
 						<tableHeader height="30" style="Table 1_TH"/>
 						<tableFooter height="30" style="Table 1_TH"/>
 						<columnHeader height="30" style="Table 1_CH">
-							<element kind="staticText" uuid="76f3d5fe-57b1-43b8-bb87-4dc2f28aa106" x="0" y="0" width="46" height="30">
+							<element kind="staticText" uuid="e6cadaed-3137-48eb-9f9f-913e0282b4fe" x="0" y="0" width="50" height="30">
 								<text><![CDATA[Product]]></text>
 							</element>
 						</columnHeader>
 						<columnFooter height="30" style="Table 1_CH"/>
 						<detailCell height="30" style="Table 1_TD">
-							<element kind="textField" uuid="90b34540-b2a6-4712-9d99-29fecd910f10" x="0" y="0" width="46" height="30">
+							<element kind="textField" uuid="8d8c8fdc-c499-457d-ad6f-2592a85dbf51" x="0" y="0" width="50" height="30">
 								<expression><![CDATA[$F{Product}]]></expression>
 							</element>
 						</detailCell>
 					</column>
-					<column kind="single" uuid="59cd485a-6d4d-4c13-8f90-51c125f4e9bc" width="42">
+					<column kind="single" uuid="7c652fc6-8dcb-471c-987a-8cd502eb2d4a" width="50">
 						<tableHeader height="30" style="Table 1_TH"/>
 						<tableFooter height="30" style="Table 1_TH"/>
 						<columnHeader height="30" style="Table 1_CH">
-							<element kind="staticText" uuid="de898154-0971-4c5e-bbd0-5a27a6088d84" x="0" y="0" width="42" height="30">
+							<element kind="staticText" uuid="277c38ba-ce11-4bab-b12a-898472b06313" x="0" y="0" width="50" height="30">
 								<text><![CDATA[Fund]]></text>
 							</element>
 						</columnHeader>
 						<columnFooter height="30" style="Table 1_CH"/>
 						<detailCell height="30" style="Table 1_TD">
-							<element kind="textField" uuid="b105a2f5-454c-4e04-ba11-efc57cd2a99d" x="0" y="0" width="42" height="30">
+							<element kind="textField" uuid="47a33265-3fbe-4a8e-80ff-c6c1dc77b647" x="0" y="0" width="50" height="30">
 								<expression><![CDATA[$F{Fund}]]></expression>
 							</element>
 						</detailCell>
 					</column>
-					<column kind="single" uuid="9dc7bce8-8bd8-4e3a-b574-3b82e48c508c" width="38">
+					<column kind="single" uuid="29cb213f-d0e5-4e8b-b9ad-a11bc3ffff8c" width="50">
 						<tableHeader height="30" style="Table 1_TH"/>
 						<tableFooter height="30" style="Table 1_TH"/>
 						<columnHeader height="30" style="Table 1_CH">
-							<element kind="staticText" uuid="907560a8-676c-4a1a-abf2-7fe4056b8510" x="0" y="0" width="38" height="30">
+							<element kind="staticText" uuid="1dd724bc-c244-4dac-990f-b6e81ec3115e" x="0" y="0" width="50" height="30">
 								<text><![CDATA[Loan Principal Amount]]></text>
 							</element>
 						</columnHeader>
 						<columnFooter height="30" style="Table 1_CH"/>
 						<detailCell height="30" style="Table 1_TD">
-							<element kind="textField" uuid="76d9a594-1d5a-4a50-883e-e25003807fb1" x="0" y="0" width="38" height="30">
+							<element kind="textField" uuid="50c5dd79-0a3b-4c23-b9fc-a5bc81b022fc" x="0" y="0" width="50" height="30">
 								<expression><![CDATA[$F{Loan Principal Amount}]]></expression>
 							</element>
 						</detailCell>
 					</column>
-					<column kind="single" uuid="f76a92db-b70f-43d1-ae1b-7cf5a8581095" width="40">
+					<column kind="single" uuid="6acd153b-a93f-4751-a374-9c6374288d8d" width="50">
 						<tableHeader height="30" style="Table 1_TH"/>
 						<tableFooter height="30" style="Table 1_TH"/>
 						<columnHeader height="30" style="Table 1_CH">
-							<element kind="staticText" uuid="90e59449-f0b9-4b7b-a214-5c927ff1cb4b" x="0" y="0" width="40" height="30">
+							<element kind="staticText" uuid="c7d17b81-da8a-4847-89bf-f34dc92960f6" x="0" y="0" width="50" height="30">
 								<text><![CDATA[Annual Nominal Interest Rate]]></text>
 							</element>
 						</columnHeader>
 						<columnFooter height="30" style="Table 1_CH"/>
 						<detailCell height="30" style="Table 1_TD">
-							<element kind="textField" uuid="f43fb169-76b5-479d-ad52-f8ea7d12da42" x="0" y="0" width="40" height="30">
+							<element kind="textField" uuid="2d353eae-a0a3-4e2c-bb53-c855a0eec3ec" x="0" y="0" width="50" height="30">
 								<expression><![CDATA[$F{Annual Nominal Interest Rate}]]></expression>
 							</element>
 						</detailCell>
 					</column>
-					<column kind="single" uuid="aee220b7-d4df-4e64-9f65-afeff692f464" width="50">
+					<column kind="single" uuid="1082c984-7cb3-4db7-9f1b-9345ae6218a6" width="50">
 						<tableHeader height="30" style="Table 1_TH"/>
 						<tableFooter height="30" style="Table 1_TH"/>
 						<columnHeader height="30" style="Table 1_CH">
-							<element kind="staticText" uuid="e7cfa366-1f4e-4a54-81a6-4fe4527121a0" x="0" y="0" width="50" height="30">
+							<element kind="staticText" uuid="dd64c656-360a-470d-aae4-3a79d89093c7" x="0" y="0" width="50" height="30">
 								<text><![CDATA[Disbursed Date]]></text>
 							</element>
 						</columnHeader>
 						<columnFooter height="30" style="Table 1_CH"/>
 						<detailCell height="30" style="Table 1_TD">
-							<element kind="textField" uuid="222cf31d-4ee5-4327-ac57-01125594ff6a" x="0" y="0" width="50" height="30">
+							<element kind="textField" uuid="3c10cfd8-9c6b-4eb5-8a24-a2d2aebef9ef" x="0" y="0" width="50" height="30">
 								<expression><![CDATA[$F{Disbursed Date}]]></expression>
 							</element>
 						</detailCell>
 					</column>
-					<column kind="single" uuid="4195bc5d-5245-4d74-ac53-e423caa9dfb7" width="50">
+					<column kind="single" uuid="af3caccb-8cb0-45a1-b962-3f56ca36aa41" width="50">
 						<tableHeader height="30" style="Table 1_TH"/>
 						<tableFooter height="30" style="Table 1_TH"/>
 						<columnHeader height="30" style="Table 1_CH">
-							<element kind="staticText" uuid="a31aadf6-2755-44fb-b04e-162d84921d53" x="0" y="0" width="50" height="30">
+							<element kind="staticText" uuid="9edcacbf-a4e5-4a18-adc7-af4b4e6c8eca" x="0" y="0" width="50" height="30">
 								<text><![CDATA[Total Loan (P+I+F+Pen)]]></text>
 							</element>
 						</columnHeader>
 						<columnFooter height="30" style="Table 1_CH"/>
 						<detailCell height="30" style="Table 1_TD">
-							<element kind="textField" uuid="a8b6c2d1-4573-4800-b051-b40d4b409f7f" x="0" y="0" width="50" height="30">
+							<element kind="textField" uuid="054715e6-ea18-4769-8176-c1d632da0e9c" x="0" y="0" width="50" height="30">
 								<expression><![CDATA[$F{Total Loan (P+I+F+Pen)}]]></expression>
 							</element>
 						</detailCell>
 					</column>
-					<column kind="single" uuid="1822e2b5-2713-4d07-864a-17ff469e8ae5" width="45">
+					<column kind="single" uuid="1d5cb4d9-3dcc-4d23-82dc-3fd844eead9f" width="50">
 						<tableHeader height="30" style="Table 1_TH"/>
 						<tableFooter height="30" style="Table 1_TH"/>
 						<columnHeader height="30" style="Table 1_CH">
-							<element kind="staticText" uuid="42714192-e3e0-4564-8d6f-2da0f71cdeda" x="0" y="0" width="45" height="30">
+							<element kind="staticText" uuid="27520e0e-ed5d-42c9-beec-8c654b9eb988" x="0" y="0" width="50" height="30">
 								<text><![CDATA[Total Repaid (P+I+F+Pen)]]></text>
 							</element>
 						</columnHeader>
 						<columnFooter height="30" style="Table 1_CH"/>
 						<detailCell height="30" style="Table 1_TD">
-							<element kind="textField" uuid="b4463b71-c409-41f1-9fd6-9f3b11759976" x="0" y="0" width="45" height="30">
+							<element kind="textField" uuid="55ad9c6b-2857-4380-b9da-4139d5a6838a" x="0" y="0" width="50" height="30">
 								<expression><![CDATA[$F{Total Repaid (P+I+F+Pen)}]]></expression>
 							</element>
 						</detailCell>
 					</column>
-					<column kind="single" uuid="d472e9ef-eb3a-4cfb-b631-1f9b4abfcf75" width="45">
+					<column kind="single" uuid="304e1bdf-e4cd-430c-b398-1c98e1d2e8f7" width="50">
 						<tableHeader height="30" style="Table 1_TH"/>
 						<tableFooter height="30" style="Table 1_TH"/>
 						<columnHeader height="30" style="Table 1_CH">
-							<element kind="staticText" uuid="21437269-98da-4ed8-978c-e685b3ce94e4" x="0" y="0" width="45" height="30">
+							<element kind="staticText" uuid="88334fbf-1d3b-4d8b-9c6a-26e77fab9a48" x="0" y="0" width="50" height="30">
 								<text><![CDATA[Loan Officer]]></text>
 							</element>
 						</columnHeader>
 						<columnFooter height="30" style="Table 1_CH"/>
 						<detailCell height="30" style="Table 1_TD">
-							<element kind="textField" uuid="df75c2d9-4d2f-4178-92ca-2412ceff66bd" x="0" y="0" width="45" height="30">
+							<element kind="textField" uuid="f7adba14-11ad-4ee9-a028-5f032d301f64" x="0" y="0" width="50" height="30">
 								<expression><![CDATA[$F{Loan Officer}]]></expression>
 							</element>
 						</detailCell>
