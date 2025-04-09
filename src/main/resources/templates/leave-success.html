@@ -1,0 +1,16 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Leave Submitted</title>
+</head>
+<body>
+<h2 th:text="${message}"></h2>
+
+<p>Employee: <span th:text="${leave.employeeName}"></span></p>
+<p>Type: <span th:text="${leave.leaveType}"></span></p>
+<p>From: <span th:text="${leave.fromDate}"></span></p>
+<p>To: <span th:text="${leave.toDate}"></span></p>
+
+</body>
+</html>

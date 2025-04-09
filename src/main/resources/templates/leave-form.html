@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Leave Application</title>
+</head>
+<body>
+<h2>Leave Application Form</h2>
+<form th:action="@{/leave}" th:object="${leave}" method="post">
+    <label>Name:</label>
+    <input type="text" th:field="*{employeeName}" /><br/>
+
+    <label>Leave Type:</label>
+    <select th:field="*{leaveType}">
+        <option value="Sick">Sick</option>
+        <option value="Casual">Casual</option>
+        <option value="Paid">Paid</option>
+    </select><br/>
+
+    <label>From Date:</label>
+    <input type="date" th:field="*{fromDate}" /><br/>
+
+    <label>To Date:</label>
+    <input type="date" th:field="*{toDate}" /><br/>
+
+    <button type="submit">Apply</button>
+</form>
+</body>
+</html>
