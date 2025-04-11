@@ -1,10 +1,8 @@
 package org.ideoholic.mrs.web;
 
-import javax.validation.Valid;
-
 import org.ideoholic.mrs.dto.ReportDto;
 import org.ideoholic.mrs.dto.ReportDtoList;
-import org.ideoholic.mrs.jasper.ReportFileService;
+import org.ideoholic.mrs.service.ReportFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +20,7 @@ public class ReportFileControllerImpl implements ReportFileController {
 	}
 
 	@Override
-	public ResponseEntity<ReportDto> updateReportFile(String reportId, @Valid ReportDto reportDto) {
+	public ResponseEntity<ReportDto> updateReportFile(String reportId, ReportDto reportDto) {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(reportFileService.updateReport(Long.parseLong(reportId), reportDto));
 	}

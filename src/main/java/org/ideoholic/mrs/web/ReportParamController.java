@@ -2,8 +2,9 @@ package org.ideoholic.mrs.web;
 
 import javax.validation.Valid;
 
-import org.ideoholic.mrs.dto.ReportDto;
-import org.ideoholic.mrs.dto.ReportDtoList;
+import org.ideoholic.mrs.dto.ReportParamDto;
+import org.ideoholic.mrs.dto.ReportParamDtoList;
+import org.ideoholic.mrs.dto.ReportParamDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,30 +20,30 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-@RequestMapping("api/v1/reportFile")
-public interface ReportFileController {
+@RequestMapping("api/v1/reportParam")
+public interface ReportParamController {
 
-	@Operation(summary = "Create report", description = "Creates a Report that maps a user-friendly report file name to the Jasper report file")
+	@Operation(summary = "Create report param", description = "Creates a Report param that contains values that can be used ")
 	@ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Successfully created the report file"),
 			@ApiResponse(responseCode = "400", description = "Bad Request") })
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	ResponseEntity<ReportDto> createReportFile(@Valid @RequestBody ReportDto reportDto);
+	ResponseEntity<ReportParamDto> createReportParam(@Valid @RequestBody ReportParamDto reportParamDto);
 
-	@PutMapping("/{reportId}")
+	@PutMapping("/{paramId}")
 	@ResponseStatus(HttpStatus.OK)
-	ResponseEntity<ReportDto> updateReportFile(@PathVariable("reportId") String reportId,
-			@Valid @RequestBody ReportDto reportDto);
+	ResponseEntity<ReportParamDto> updateReportParam(@PathVariable("paramId") String paramId,
+			@Valid @RequestBody ReportParamDto ReportParamDto);
 
-	@GetMapping("/{reportId}")
+	@GetMapping("/{paramId}")
 	@ResponseStatus(HttpStatus.OK)
-	ResponseEntity<ReportDto> getReportFile(@PathVariable("reportId") String reportId);
+	ResponseEntity<ReportParamDto> getReportParam(@PathVariable("paramId") String paramId);
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	ResponseEntity<ReportDtoList> getAllReportFiles();
+	ResponseEntity<ReportParamDtoList> getAllReportParamss();
 
-	@DeleteMapping("/{reportId}")
+	@DeleteMapping("/{paramId}")
 	@ResponseStatus(HttpStatus.OK)
-	ResponseEntity<ReportDto> deleteReportFile(@PathVariable("reportId") String reportId);
+	ResponseEntity<ReportParamDto> deleteReportParam(@PathVariable("paramId") String paramId);
 }
