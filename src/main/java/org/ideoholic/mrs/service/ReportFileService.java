@@ -1,4 +1,4 @@
-package org.ideoholic.mrs.jasper;
+package org.ideoholic.mrs.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
