@@ -1,0 +1,598 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="Expected_Payments_By_Date" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="facc49a1-652c-4a86-9462-6927b0284004">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<dataset name="Dataset" uuid="729f2188-c63d-4580-a5f2-7c0bc70457c7">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
+		<parameter name="officeId" class="java.lang.Integer"/>
+		<parameter name="loanOfficerId" class="java.lang.Integer"/>
+		<parameter name="startDate" class="java.sql.Date"/>
+		<parameter name="endDate" class="java.sql.Date"/>
+		<parameter name="currentUserHierarchy" class="java.lang.String"/>
+		<query language="SQL"><![CDATA[SELECT 
+    ounder.name AS "Office",
+    IFNULL(ms.display_name, '-') AS "Loan Officer",
+    mc.account_no AS "Client Account Number",
+    mc.display_name AS "Name",
+    mp.name AS "Product",
+    ml.account_no AS "Loan Account Number",
+    mr.duedate AS "Due Date",
+    mr.installment AS "Installment",
+    cu.display_symbol AS "Currency",
+    
+    mr.principal_amount - IFNULL(mr.principal_completed_derived, 0) AS "Principal Due",
+    
+    mr.interest_amount - IFNULL(
+        IFNULL(mr.interest_completed_derived, mr.interest_waived_derived), 0
+    ) AS "Interest Due",
+    
+    IFNULL(mr.fee_charges_amount, 0) - IFNULL(
+        IFNULL(mr.fee_charges_completed_derived, mr.fee_charges_waived_derived), 0
+    ) AS "Fees Due",
+    
+    IFNULL(mr.penalty_charges_amount, 0) - IFNULL(
+        IFNULL(mr.penalty_charges_completed_derived, mr.penalty_charges_waived_derived), 0
+    ) AS "Penalty Due",
+    
+    (
+        mr.principal_amount - IFNULL(mr.principal_completed_derived, 0) +
+        mr.interest_amount - IFNULL(
+            IFNULL(mr.interest_completed_derived, mr.interest_waived_derived), 0
+        ) +
+        IFNULL(mr.fee_charges_amount, 0) - IFNULL(
+            IFNULL(mr.fee_charges_completed_derived, mr.fee_charges_waived_derived), 0
+        ) +
+        IFNULL(mr.penalty_charges_amount, 0) - IFNULL(
+            IFNULL(mr.penalty_charges_completed_derived, mr.penalty_charges_waived_derived), 0
+        )
+    ) AS "Total Due",
+    
+    mlaa.total_overdue_derived AS "Total Overdue"
+    
+FROM 
+    m_office mo
+    JOIN m_office ounder 
+        ON ounder.hierarchy LIKE CONCAT(mo.hierarchy, '%')
+        AND ounder.hierarchy LIKE CONCAT($P{currentUserHierarchy}, '%')
+    
+    LEFT JOIN m_client mc 
+        ON mc.office_id = ounder.id
+    
+    LEFT JOIN m_loan ml 
+        ON ml.client_id = mc.id 
+        AND ml.loan_status_id = 300
+    
+    LEFT JOIN m_loan_arrears_aging mlaa 
+        ON mlaa.loan_id = ml.id
+    
+    LEFT JOIN m_loan_repayment_schedule mr 
+        ON mr.loan_id = ml.id 
+        AND mr.completed_derived = 0
+    
+    LEFT JOIN m_product_loan mp 
+        ON mp.id = ml.product_id
+    
+    LEFT JOIN m_staff ms 
+        ON ms.id = ml.loan_officer_id
+    
+    LEFT JOIN m_currency cu 
+        ON cu.code = ml.currency_code
+
+WHERE 
+    mo.id = $P{officeId}
+    AND (
+        IFNULL(ml.loan_officer_id, -10) = $P{loanOfficerId} 
+        OR $P{loanOfficerId} = -1
+    )
+    AND mr.duedate BETWEEN $P{startDate} AND $P{endDate}
+
+ORDER BY 
+    ounder.id, mr.duedate, ml.account_no;
+]]></query>
+		<field name="Office" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="name"/>
+			<property name="com.jaspersoft.studio.field.label" value="Office"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_office"/>
+		</field>
+		<field name="Loan Officer" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="Loan Officer"/>
+			<property name="com.jaspersoft.studio.field.label" value="Loan Officer"/>
+		</field>
+		<field name="Client Account Number" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="account_no"/>
+			<property name="com.jaspersoft.studio.field.label" value="Client Account Number"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+		</field>
+		<field name="Name" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="display_name"/>
+			<property name="com.jaspersoft.studio.field.label" value="Name"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+		</field>
+		<field name="Product" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="name"/>
+			<property name="com.jaspersoft.studio.field.label" value="Product"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_product_loan"/>
+		</field>
+		<field name="Loan Account Number" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="account_no"/>
+			<property name="com.jaspersoft.studio.field.label" value="Loan Account Number"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_loan"/>
+		</field>
+		<field name="Due Date" class="java.sql.Date">
+			<property name="com.jaspersoft.studio.field.name" value="duedate"/>
+			<property name="com.jaspersoft.studio.field.label" value="Due Date"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_loan_repayment_schedule"/>
+		</field>
+		<field name="Installment" class="java.lang.Short">
+			<property name="com.jaspersoft.studio.field.name" value="installment"/>
+			<property name="com.jaspersoft.studio.field.label" value="Installment"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_loan_repayment_schedule"/>
+		</field>
+		<field name="Currency" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="display_symbol"/>
+			<property name="com.jaspersoft.studio.field.label" value="Currency"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_currency"/>
+		</field>
+		<field name="Principal Due" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="Principal Due"/>
+			<property name="com.jaspersoft.studio.field.label" value="Principal Due"/>
+		</field>
+		<field name="Interest Due" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="Interest Due"/>
+			<property name="com.jaspersoft.studio.field.label" value="Interest Due"/>
+		</field>
+		<field name="Fees Due" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="Fees Due"/>
+			<property name="com.jaspersoft.studio.field.label" value="Fees Due"/>
+		</field>
+		<field name="Penalty Due" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="Penalty Due"/>
+			<property name="com.jaspersoft.studio.field.label" value="Penalty Due"/>
+		</field>
+		<field name="Total Due" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="Total Due"/>
+			<property name="com.jaspersoft.studio.field.label" value="Total Due"/>
+		</field>
+		<field name="Total Overdue" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="total_overdue_derived"/>
+			<property name="com.jaspersoft.studio.field.label" value="Total Overdue"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_loan_arrears_aging"/>
+		</field>
+	</dataset>
+	<parameter name="officeId" class="java.lang.Integer"/>
+	<parameter name="loanOfficerId" class="java.lang.Integer"/>
+	<parameter name="startDate" class="java.sql.Date"/>
+	<parameter name="endDate" class="java.sql.Date"/>
+	<parameter name="currentUserHierarchy" class="java.lang.String"/>
+	<query language="SQL"><![CDATA[SELECT 
+    ounder.name AS "Office",
+    IFNULL(ms.display_name, '-') AS "Loan Officer",
+    mc.account_no AS "Client Account Number",
+    mc.display_name AS "Name",
+    mp.name AS "Product",
+    ml.account_no AS "Loan Account Number",
+    mr.duedate AS "Due Date",
+    mr.installment AS "Installment",
+    cu.display_symbol AS "Currency",
+    
+    mr.principal_amount - IFNULL(mr.principal_completed_derived, 0) AS "Principal Due",
+    
+    mr.interest_amount - IFNULL(
+        IFNULL(mr.interest_completed_derived, mr.interest_waived_derived), 0
+    ) AS "Interest Due",
+    
+    IFNULL(mr.fee_charges_amount, 0) - IFNULL(
+        IFNULL(mr.fee_charges_completed_derived, mr.fee_charges_waived_derived), 0
+    ) AS "Fees Due",
+    
+    IFNULL(mr.penalty_charges_amount, 0) - IFNULL(
+        IFNULL(mr.penalty_charges_completed_derived, mr.penalty_charges_waived_derived), 0
+    ) AS "Penalty Due",
+    
+    (
+        mr.principal_amount - IFNULL(mr.principal_completed_derived, 0) +
+        mr.interest_amount - IFNULL(
+            IFNULL(mr.interest_completed_derived, mr.interest_waived_derived), 0
+        ) +
+        IFNULL(mr.fee_charges_amount, 0) - IFNULL(
+            IFNULL(mr.fee_charges_completed_derived, mr.fee_charges_waived_derived), 0
+        ) +
+        IFNULL(mr.penalty_charges_amount, 0) - IFNULL(
+            IFNULL(mr.penalty_charges_completed_derived, mr.penalty_charges_waived_derived), 0
+        )
+    ) AS "Total Due",
+    
+    mlaa.total_overdue_derived AS "Total Overdue"
+    
+FROM 
+    m_office mo
+    JOIN m_office ounder 
+        ON ounder.hierarchy LIKE CONCAT(mo.hierarchy, '%')
+        AND ounder.hierarchy LIKE CONCAT($P{currentUserHierarchy}, '%')
+    
+    LEFT JOIN m_client mc 
+        ON mc.office_id = ounder.id
+    
+    LEFT JOIN m_loan ml 
+        ON ml.client_id = mc.id 
+        AND ml.loan_status_id = 300
+    
+    LEFT JOIN m_loan_arrears_aging mlaa 
+        ON mlaa.loan_id = ml.id
+    
+    LEFT JOIN m_loan_repayment_schedule mr 
+        ON mr.loan_id = ml.id 
+        AND mr.completed_derived = 0
+    
+    LEFT JOIN m_product_loan mp 
+        ON mp.id = ml.product_id
+    
+    LEFT JOIN m_staff ms 
+        ON ms.id = ml.loan_officer_id
+    
+    LEFT JOIN m_currency cu 
+        ON cu.code = ml.currency_code
+
+WHERE 
+    mo.id = $P{officeId}
+    AND (
+        IFNULL(ml.loan_officer_id, -10) = $P{loanOfficerId} 
+        OR $P{loanOfficerId} = -1
+    )
+    AND mr.duedate BETWEEN $P{startDate} AND $P{endDate}
+
+ORDER BY 
+    ounder.id, mr.duedate, ml.account_no;
+]]></query>
+	<field name="Office" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="name"/>
+		<property name="com.jaspersoft.studio.field.label" value="Office"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_office"/>
+	</field>
+	<field name="Loan Officer" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Loan Officer"/>
+		<property name="com.jaspersoft.studio.field.label" value="Loan Officer"/>
+	</field>
+	<field name="Client Account Number" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="account_no"/>
+		<property name="com.jaspersoft.studio.field.label" value="Client Account Number"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+	</field>
+	<field name="Name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="display_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="Name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+	</field>
+	<field name="Product" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="name"/>
+		<property name="com.jaspersoft.studio.field.label" value="Product"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_product_loan"/>
+	</field>
+	<field name="Loan Account Number" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="account_no"/>
+		<property name="com.jaspersoft.studio.field.label" value="Loan Account Number"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_loan"/>
+	</field>
+	<field name="Due Date" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="duedate"/>
+		<property name="com.jaspersoft.studio.field.label" value="Due Date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_loan_repayment_schedule"/>
+	</field>
+	<field name="Installment" class="java.lang.Short">
+		<property name="com.jaspersoft.studio.field.name" value="installment"/>
+		<property name="com.jaspersoft.studio.field.label" value="Installment"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_loan_repayment_schedule"/>
+	</field>
+	<field name="Currency" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="display_symbol"/>
+		<property name="com.jaspersoft.studio.field.label" value="Currency"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_currency"/>
+	</field>
+	<field name="Principal Due" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="Principal Due"/>
+		<property name="com.jaspersoft.studio.field.label" value="Principal Due"/>
+	</field>
+	<field name="Interest Due" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="Interest Due"/>
+		<property name="com.jaspersoft.studio.field.label" value="Interest Due"/>
+	</field>
+	<field name="Fees Due" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="Fees Due"/>
+		<property name="com.jaspersoft.studio.field.label" value="Fees Due"/>
+	</field>
+	<field name="Penalty Due" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="Penalty Due"/>
+		<property name="com.jaspersoft.studio.field.label" value="Penalty Due"/>
+	</field>
+	<field name="Total Due" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="Total Due"/>
+		<property name="com.jaspersoft.studio.field.label" value="Total Due"/>
+	</field>
+	<field name="Total Overdue" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="total_overdue_derived"/>
+		<property name="com.jaspersoft.studio.field.label" value="Total Overdue"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_loan_arrears_aging"/>
+	</field>
+	<background splitType="Stretch"/>
+	<summary height="240" splitType="Stretch">
+		<element kind="component" uuid="577ee6c0-a823-4e3f-83e7-e09b627e0f05" x="-20" y="80" width="590" height="160">
+			<component kind="table">
+				<datasetRun uuid="bdc9c319-e8f5-4648-9a0e-9a77f3d8a6b6" subDataset="Dataset">
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<parameter name="currentUserHierarchy">
+						<expression><![CDATA[$P{currentUserHierarchy}]]></expression>
+					</parameter>
+					<parameter name="officeId">
+						<expression><![CDATA[$P{officeId}]]></expression>
+					</parameter>
+					<parameter name="loanOfficerId">
+						<expression><![CDATA[$P{loanOfficerId}]]></expression>
+					</parameter>
+					<parameter name="startDate">
+						<expression><![CDATA[$P{startDate}]]></expression>
+					</parameter>
+					<parameter name="endDate">
+						<expression><![CDATA[$P{endDate}]]></expression>
+					</parameter>
+				</datasetRun>
+				<column kind="single" uuid="0612edf6-f4a4-4bd5-87d9-1895ff526299" width="40">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="acb2b3dc-5842-4f8e-baef-a3b66b644271" x="0" y="0" width="40" height="30">
+							<text><![CDATA[Office]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="dc18aa55-5179-4b26-b10b-1b0886333347" x="0" y="0" width="40" height="30">
+							<expression><![CDATA[$F{Office}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="36fa7b76-a5ab-4645-8981-9a3c18eb30e9" width="40">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="e8e874ad-cd1d-4cf3-bcb5-9eb50aaf642c" x="0" y="0" width="40" height="30">
+							<text><![CDATA[Loan Officer]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="fc953d90-a64c-4882-9790-51ba386a11a0" x="0" y="0" width="40" height="30">
+							<expression><![CDATA[$F{Loan Officer}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="1f9ff20e-9ba5-420d-a1fa-6d5a70444a22" width="40">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="7f46a1a6-a99f-4aae-b32a-e49f486bac43" x="0" y="0" width="40" height="30">
+							<text><![CDATA[Client Account Number]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="2af36d18-c433-4a9b-bb17-19fc416dd9f5" x="0" y="0" width="40" height="30">
+							<expression><![CDATA[$F{Client Account Number}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="2cfa7ac9-4663-42e1-84a3-3dc230e4208c" width="40">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="1c8d5a43-bf64-4a39-a06d-d193333a712f" x="0" y="0" width="40" height="30">
+							<text><![CDATA[Name]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="4a09d17f-aaac-4a1c-92be-bd713766be6f" x="0" y="0" width="40" height="30">
+							<expression><![CDATA[$F{Name}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="19286c94-c83c-4f47-aa8a-8b0138e1e6d1" width="40">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="de0626c3-1337-4ee3-a3e3-1148edc1386a" x="0" y="0" width="40" height="30">
+							<text><![CDATA[Product]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="f30c2754-a5f0-4082-8dc3-3919975d2b5f" x="0" y="0" width="40" height="30">
+							<expression><![CDATA[$F{Product}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="b4f4fa53-7aef-4abc-b826-676708b4cc90" width="40">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="86471945-9471-44d2-980d-5dc5d1839dbe" x="0" y="0" width="40" height="30">
+							<text><![CDATA[Loan Account Number]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="b1e54332-3997-4f4c-8ca4-201f5e503f40" x="0" y="0" width="40" height="30">
+							<expression><![CDATA[$F{Loan Account Number}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="0ce55b9e-c80c-4f58-be2b-6201bf2bcf49" width="40">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="db159222-caf8-440b-857b-d1882ffc44fa" x="0" y="0" width="40" height="30">
+							<text><![CDATA[Due Date]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="14ee663a-9388-4d3c-9d43-f3d6f9cad0e6" x="0" y="0" width="40" height="30">
+							<expression><![CDATA[$F{Due Date}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="2a8f8c62-522a-4c56-9d0c-ecb76022e176" width="40">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="90c35244-7c0b-4824-8d1b-916c3e711791" x="0" y="0" width="40" height="30">
+							<text><![CDATA[Installment]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="8d654e17-e4c7-42ad-9c0f-c08b54b711c1" x="0" y="0" width="40" height="30">
+							<expression><![CDATA[$F{Installment}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="24376bdc-112a-440e-a333-6f1688de7328" width="40">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="7ada6b84-1e68-4a44-aaf6-e10c55b52f96" x="0" y="0" width="40" height="30">
+							<text><![CDATA[Currency]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="ee64dc3f-a8e1-442f-8081-618db82faf7e" x="0" y="0" width="40" height="30">
+							<expression><![CDATA[$F{Currency}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="204edd34-714e-431c-bcb1-eec69c55cb6a" width="40">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="b80527d7-394b-4873-961d-e5f66320409c" x="0" y="0" width="40" height="30">
+							<text><![CDATA[Principal Due]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="5df80599-c36c-47fb-834c-72697e5619d7" x="0" y="0" width="40" height="30">
+							<expression><![CDATA[$F{Principal Due}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="829023a9-2c2d-4806-988b-73cebc2c1706" width="40">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="5deb111c-919f-4d53-93ac-30f4ed790c55" x="0" y="0" width="40" height="30">
+							<text><![CDATA[Interest Due]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="0d93fda6-d4b6-4766-b5cb-7f63f063a572" x="0" y="0" width="40" height="30">
+							<expression><![CDATA[$F{Interest Due}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="8f61524f-4d92-4638-9b5f-08c7116b8b56" width="40">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="6c01a254-b3cf-4635-8515-6d8f90f36744" x="0" y="0" width="40" height="30">
+							<text><![CDATA[Fees Due]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="bb458222-ad56-40de-9cc5-e1362b3d8ad5" x="0" y="0" width="40" height="30">
+							<expression><![CDATA[$F{Fees Due}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="b922b69b-24dc-46d4-a70b-78b17f4ef593" width="40">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="f0c64331-ed19-473a-9e14-f3c7ad4f124a" x="0" y="0" width="40" height="30">
+							<text><![CDATA[Penalty Due]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="4336facf-fa32-4640-b68e-ff803389ccb8" x="0" y="0" width="40" height="30">
+							<expression><![CDATA[$F{Penalty Due}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="2a4273c2-b1bd-4ba2-9b67-0c2011f1d824" width="30">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="0dbd3e3f-974d-4c5e-88bc-04bf9167738c" x="0" y="0" width="30" height="30">
+							<text><![CDATA[Total Due]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="16a43109-0c9b-4c89-a884-f9e51c31b923" x="0" y="0" width="30" height="30">
+							<expression><![CDATA[$F{Total Due}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="76a1d139-dff8-4a92-9feb-26fd134c2e36" width="30">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="ca8a13cb-a312-42c5-9e83-b6a824fe5581" x="0" y="0" width="30" height="30">
+							<text><![CDATA[Total Overdue]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="7a692b63-51c6-45dc-a8d2-8457f0bf66e4" x="0" y="0" width="30" height="30">
+							<expression><![CDATA[$F{Total Overdue}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+			</component>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+			<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+			<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+			<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+		</element>
+	</summary>
+</jasperReport>
