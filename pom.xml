@@ -18,7 +18,7 @@
 	<description>Mifos reporting tool developed by Ideoholic</description>
 
 	<properties>
-		<start-class>org.ideoholic.curium.CuriumApplication</start-class>
+		<start-class>org.ideoholic.mrs.MifosReportingService</start-class>
 		<java.version>17</java.version>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
 		<lombok.version>1.18.32</lombok.version>
