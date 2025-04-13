@@ -29,8 +29,8 @@ public class ReportFileService {
 		return reportMapper.mapReport(report);
 	}
 	
-	public ReportDto getReport(Long reportId) {
-		Report report = reportRepository.findById(reportId).orElseThrow();
+	public ReportDto getReport(String reportId) {
+		Report report = reportRepository.findByReportId(reportId).orElseThrow();
 		return reportMapper.mapReport(report);
 	}
 	
@@ -46,22 +46,22 @@ public class ReportFileService {
 				.build();
 	}
 	
-	public ReportDto updateReport(Long reportId, ReportDto reportDto) {
+	public ReportDto updateReport(String reportId, ReportDto reportDto) {
 		// First fetch to ensure that the report exists
-		Report report = reportRepository.findById(reportId).orElseThrow();
-		
+		Report report = reportRepository.findByReportId(reportId).orElseThrow();
+
 		reportMapper.updateReport(report, reportDto);
-		
+
 		reportRepository.save(report);
-		
+
 		return reportMapper.mapReport(report);
 	}
 	
-	public ReportDto deleteReport(Long reportId) {
-		Report report = reportRepository.findById(reportId).orElseThrow();
-		
-		reportRepository.deleteById(reportId);
-		
+	public ReportDto deleteReport(String reportId) {
+		Report report = reportRepository.findByReportId(reportId).orElseThrow();
+
+		reportRepository.deleteById(report.getId());
+
 		return reportMapper.mapReport(report);
 	}
 

@@ -22,14 +22,13 @@ public class ReportParamControllerImpl implements ReportParamController {
 	}
 
 	@Override
-	public ResponseEntity<ReportParamDto> updateReportParam(String paramId, @Valid ReportParamDto ReportParamDto) {
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(reportParamService.updateReportParam(Long.parseLong(paramId), ReportParamDto));
+	public ResponseEntity<ReportParamDto> updateReportParam(String paramId, @Valid ReportParamDto reportParamDto) {
+		return ResponseEntity.status(HttpStatus.OK).body(reportParamService.updateReportParam(paramId, reportParamDto));
 	}
 
 	@Override
 	public ResponseEntity<ReportParamDto> getReportParam(String paramId) {
-		return ResponseEntity.ok(reportParamService.getReportParam(Long.parseLong(paramId)));
+		return ResponseEntity.ok(reportParamService.getReportParam(paramId));
 	}
 
 	@Override
@@ -39,7 +38,7 @@ public class ReportParamControllerImpl implements ReportParamController {
 
 	@Override
 	public ResponseEntity<ReportParamDto> deleteReportParam(String paramId) {
-		return ResponseEntity.ok(reportParamService.deleteReportParam(Long.parseLong(paramId)));
+		return ResponseEntity.ok(reportParamService.deleteReportParam(paramId));
 	}
 
 }

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.ideoholic.mrs.dao.ReportParamRepository;
-import org.ideoholic.mrs.dto.ReportDto;
 import org.ideoholic.mrs.dto.ReportParamDto;
 import org.ideoholic.mrs.dto.ReportParamDtoList;
 import org.ideoholic.mrs.mappers.ReportParamMapper;
@@ -29,40 +28,38 @@ public class ReportParamService {
 		reportParamRepo.save(reportParam);
 		return reportParamMapper.mapReportParam(reportParam);
 	}
-	
-	public ReportParamDto getReportParam(Long paramId) {
-		ReportParam reportParam = reportParamRepo.findById(paramId).orElseThrow();
+
+	public ReportParamDto getReportParam(String paramId) {
+		ReportParam reportParam = reportParamRepo.findByParamId(paramId).orElseThrow();
 		return reportParamMapper.mapReportParam(reportParam);
 	}
-	
+
 	public ReportParamDtoList getAllReportParams() {
 		List<ReportParam> reportParamList = reportParamRepo.findAll();
-		
+
 		List<ReportParamDto> reportsDto = reportParamList.stream()
 				.map(reportParam -> reportParamMapper.mapReportParam(reportParam)) // Mapping to ReportDto
 				.collect(Collectors.toList());// Collecting the results into a list
-		
-		return ReportParamDtoList.builder()
-				.reportParams(reportsDto)
-				.build();
+
+		return ReportParamDtoList.builder().reportParams(reportsDto).build();
 	}
-	
-	public ReportParamDto updateReportParam(Long reportParamId, ReportParamDto reportParamDto) {
+
+	public ReportParamDto updateReportParam(String reportParamId, ReportParamDto reportParamDto) {
 		// First fetch to ensure that the report exists
-		ReportParam reportParam = reportParamRepo.findById(reportParamId).orElseThrow();
-		
+		ReportParam reportParam = reportParamRepo.findByParamId(reportParamId).orElseThrow();
+
 		reportParamMapper.updateReportParam(reportParam, reportParamDto);
-		
+
 		reportParamRepo.save(reportParam);
-		
+
 		return reportParamMapper.mapReportParam(reportParam);
 	}
-	
-	public ReportParamDto deleteReportParam(Long reportParamId) {
-		ReportParam reportParam = reportParamRepo.findById(reportParamId).orElseThrow();
-		
-		reportParamRepo.deleteById(reportParamId);
-		
+
+	public ReportParamDto deleteReportParam(String reportParamId) {
+		ReportParam reportParam = reportParamRepo.findByParamId(reportParamId).orElseThrow();
+
+		reportParamRepo.deleteById(reportParam.getId());
+
 		return reportParamMapper.mapReportParam(reportParam);
 	}
 
