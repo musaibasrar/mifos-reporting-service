@@ -21,13 +21,12 @@ public class ReportFileControllerImpl implements ReportFileController {
 
 	@Override
 	public ResponseEntity<ReportDto> updateReportFile(String reportId, ReportDto reportDto) {
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(reportFileService.updateReport(Long.parseLong(reportId), reportDto));
+		return ResponseEntity.status(HttpStatus.OK).body(reportFileService.updateReport(reportId, reportDto));
 	}
 
 	@Override
 	public ResponseEntity<ReportDto> getReportFile(String reportId) {
-		return ResponseEntity.ok(reportFileService.getReport(Long.parseLong(reportId)));
+		return ResponseEntity.ok(reportFileService.getReport(reportId));
 	}
 
 	@Override
@@ -37,7 +36,7 @@ public class ReportFileControllerImpl implements ReportFileController {
 
 	@Override
 	public ResponseEntity<ReportDto> deleteReportFile(String reportId) {
-		return ResponseEntity.ok(reportFileService.deleteReport(Long.parseLong(reportId)));
+		return ResponseEntity.ok(reportFileService.deleteReport(reportId));
 	}
 
 }
