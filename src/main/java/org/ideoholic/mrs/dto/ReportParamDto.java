@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReportParamDto {
 
-	private Long paramId;
+	private String paramId;
 
 	@NotNull(message = "Report Param Name cannot be null")
 	@NotEmpty(message = "Report Param Name cannot be empty")
