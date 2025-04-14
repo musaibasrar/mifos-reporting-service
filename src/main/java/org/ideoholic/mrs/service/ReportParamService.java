@@ -38,7 +38,7 @@ public class ReportParamService {
 		List<ReportParam> reportParamList = reportParamRepo.findAll();
 
 		List<ReportParamDto> reportsDto = reportParamList.stream()
-				.map(reportParam -> reportParamMapper.mapReportParam(reportParam)) // Mapping to ReportDto
+				.map(reportParam -> reportParamMapper.mapReportParam(reportParam)) // Mapping to ReportParamDto
 				.collect(Collectors.toList());// Collecting the results into a list
 
 		return ReportParamDtoList.builder().reportParams(reportsDto).build();
