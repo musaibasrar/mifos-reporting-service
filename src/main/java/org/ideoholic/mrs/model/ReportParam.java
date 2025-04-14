@@ -53,7 +53,7 @@ public class ReportParam {
 	private List<ReportParamRelation> reportMappings = new ArrayList<>();
 
 	@PrePersist
-	public void generateReportId() {
+	public void generateParamId() {
 		if (this.paramId == null) {
 			this.paramId = HashUtil.generateShortId();
 		}

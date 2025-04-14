@@ -32,7 +32,7 @@ public class ReportParamControllerImpl implements ReportParamController {
 	}
 
 	@Override
-	public ResponseEntity<ReportParamDtoList> getAllReportParamss() {
+	public ResponseEntity<ReportParamDtoList> getAllReportParams() {
 		return ResponseEntity.ok(reportParamService.getAllReportParams());
 	}
 
