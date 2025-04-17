@@ -18,3 +18,9 @@ spring.jpa.properties.hibernate.format_sql=true
 spring.jpa.hibernate.ddl-auto=update
 ## Show SQL in the logs
 spring.jpa.show-sql=true
+
+
+report.datasource.jdbc-url: jdbc:mariadb://localhost:3306/mifos
+report.datasource.username: root
+report.datasource.password: root
+report.datasource.driver-class-name: org.mariadb.jdbc.Driver
