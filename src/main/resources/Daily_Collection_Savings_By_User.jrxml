@@ -1,0 +1,275 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="Daily_Collection_Savings_By_User" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="36f4019e-9048-470c-a352-c3102d4fdbae">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<dataset name="Dataset1" uuid="aaed2c2a-0c9a-44ea-9ea2-9d747aed8a99">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<parameter name="appUserId" class="java.lang.Integer"/>
+		<parameter name="asOn" class="java.sql.Date"/>
+		<query language="sql"><![CDATA[SELECT
+CONCAT(REPEAT("..", ((LENGTH(ounder.hierarchy) - LENGTH(
+REPLACE(ounder.hierarchy, '.', '')) - 1))), ounder.name) AS "Office Name",
+c.display_name AS "Client Name",
+sa.account_no AS "Savings Account",
+sat.amount AS "Deposit Amount",
+sat.transaction_date AS "Deposit Date",
+sat.created_date AS "Created Date",
+CONCAT(a.firstname, ' ', a.lastname) AS "Deposited By"
+FROM m_office o
+JOIN m_office ounder ON ounder.hierarchy LIKE CONCAT(o.hierarchy, '%')
+JOIN m_client AS c ON c.office_id = ounder.id
+JOIN m_savings_account AS sa ON sa.client_id = c.id
+RIGHT JOIN m_savings_account_transaction AS sat ON sat.savings_account_id = sa.id
+JOIN m_appuser AS a ON sat.appuser_id = a.id
+WHERE o.id = 1
+AND a.id = $P{appUserId}
+AND sat.transaction_type_enum = 1
+AND sat.is_reversed = 0
+AND sat.transaction_date = $P{asOn}
+ORDER BY sat.created_date ASC
+]]></query>
+		<field name="Office Name" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="Office Name"/>
+			<property name="com.jaspersoft.studio.field.label" value="Office Name"/>
+		</field>
+		<field name="Client Name" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="display_name"/>
+			<property name="com.jaspersoft.studio.field.label" value="Client Name"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+		</field>
+		<field name="Savings Account" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="account_no"/>
+			<property name="com.jaspersoft.studio.field.label" value="Savings Account"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_savings_account"/>
+		</field>
+		<field name="Deposit Amount" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="amount"/>
+			<property name="com.jaspersoft.studio.field.label" value="Deposit Amount"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_savings_account_transaction"/>
+		</field>
+		<field name="Deposit Date" class="java.sql.Date">
+			<property name="com.jaspersoft.studio.field.name" value="transaction_date"/>
+			<property name="com.jaspersoft.studio.field.label" value="Deposit Date"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_savings_account_transaction"/>
+		</field>
+		<field name="Created Date" class="java.sql.Timestamp">
+			<property name="com.jaspersoft.studio.field.name" value="created_date"/>
+			<property name="com.jaspersoft.studio.field.label" value="Created Date"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_savings_account_transaction"/>
+		</field>
+		<field name="Deposited By" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="Deposited By"/>
+			<property name="com.jaspersoft.studio.field.label" value="Deposited By"/>
+		</field>
+	</dataset>
+	<parameter name="appUserId" class="java.lang.Integer"/>
+	<parameter name="asOn" class="java.sql.Date"/>
+	<query language="SQL"><![CDATA[SELECT
+CONCAT(REPEAT("..", ((LENGTH(ounder.hierarchy) - LENGTH(
+REPLACE(ounder.hierarchy, '.', '')) - 1))), ounder.name) AS "Office Name",
+c.display_name AS "Client Name",
+sa.account_no AS "Savings Account",
+sat.amount AS "Deposit Amount",
+sat.transaction_date AS "Deposit Date",
+sat.created_date AS "Created Date",
+CONCAT(a.firstname, ' ', a.lastname) AS "Deposited By"
+FROM m_office o
+JOIN m_office ounder ON ounder.hierarchy LIKE CONCAT(o.hierarchy, '%')
+JOIN m_client AS c ON c.office_id = ounder.id
+JOIN m_savings_account AS sa ON sa.client_id = c.id
+RIGHT JOIN m_savings_account_transaction AS sat ON sat.savings_account_id = sa.id
+JOIN m_appuser AS a ON sat.appuser_id = a.id
+WHERE o.id = 1
+AND a.id = $P{appUserId}
+AND sat.transaction_type_enum = 1
+AND sat.is_reversed = 0
+AND sat.transaction_date = $P{asOn}
+ORDER BY sat.created_date ASC
+]]></query>
+	<field name="Office Name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Office Name"/>
+		<property name="com.jaspersoft.studio.field.label" value="Office Name"/>
+	</field>
+	<field name="Client Name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="display_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="Client Name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+	</field>
+	<field name="Savings Account" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="account_no"/>
+		<property name="com.jaspersoft.studio.field.label" value="Savings Account"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_savings_account"/>
+	</field>
+	<field name="Deposit Amount" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="amount"/>
+		<property name="com.jaspersoft.studio.field.label" value="Deposit Amount"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_savings_account_transaction"/>
+	</field>
+	<field name="Deposit Date" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="transaction_date"/>
+		<property name="com.jaspersoft.studio.field.label" value="Deposit Date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_savings_account_transaction"/>
+	</field>
+	<field name="Created Date" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="created_date"/>
+		<property name="com.jaspersoft.studio.field.label" value="Created Date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_savings_account_transaction"/>
+	</field>
+	<field name="Deposited By" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Deposited By"/>
+		<property name="com.jaspersoft.studio.field.label" value="Deposited By"/>
+	</field>
+	<background splitType="Stretch"/>
+	<summary height="400" splitType="Stretch">
+		<element kind="component" uuid="075cc000-f76a-4d6e-990a-2ea17fd5e8c5" x="20" y="80" width="380" height="150">
+			<component kind="table">
+				<datasetRun uuid="cc55beb3-0827-4a81-a0e1-aa0b19a26803" subDataset="Dataset1">
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<parameter name="appUserId">
+						<expression><![CDATA[$P{appUserId}]]></expression>
+					</parameter>
+					<parameter name="asOn">
+						<expression><![CDATA[$P{asOn}]]></expression>
+					</parameter>
+				</datasetRun>
+				<column kind="single" uuid="7045de07-5db9-4edf-8244-226fbfb53b2f" width="50">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="1d91f59b-8280-486b-bc4d-69dec46a0686" x="0" y="0" width="50" height="30" bold="true" hTextAlign="Center">
+							<text><![CDATA[Office Name]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="2827f925-946b-444c-8008-4e2f2beed65c" x="0" y="0" width="50" height="30" hTextAlign="Center">
+							<expression><![CDATA[$F{Office Name}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="03ae198b-ba3d-4145-8ad8-866049f8355d" width="50">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="3bf30973-9a76-49f4-b7d2-24dfae7b606f" x="0" y="0" width="50" height="30" bold="true" hTextAlign="Center">
+							<text><![CDATA[Client Name]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="14bd3c5d-e404-48b8-b9da-ef78d29256a4" x="0" y="0" width="50" height="30" hTextAlign="Center">
+							<expression><![CDATA[$F{Client Name}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="5c703cff-0f9e-400f-aae1-15ef4bf2f248" width="56">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="161bfcea-3e90-4361-8f5b-27e5a6ad1cb9" x="0" y="0" width="56" height="30" bold="true" hTextAlign="Center">
+							<text><![CDATA[Savings Account]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="b1550ac5-01d8-4da4-8aea-99337eb11128" x="0" y="0" width="56" height="30" hTextAlign="Center">
+							<expression><![CDATA[$F{Savings Account}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="724aeda3-e088-46b1-8f0c-0f535975f46a" width="56">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="c2246541-7392-44cd-97b4-115f982d4ac6" x="0" y="0" width="56" height="30" bold="true" hTextAlign="Center">
+							<text><![CDATA[Deposit Amount]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="e25c24a9-033d-4f88-b329-d20402abe4fa" x="0" y="0" width="56" height="30" hTextAlign="Center">
+							<expression><![CDATA[$F{Deposit Amount}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="1afd4cf5-7710-4c9f-a993-c947e6866b9c" width="56">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="a0c49f3d-6933-4c9d-8c59-f0e2d2a02839" x="0" y="0" width="56" height="30" bold="true" hTextAlign="Center">
+							<text><![CDATA[Deposit Date]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="30c7b2ab-555a-4b92-ab97-9335f47c592a" x="0" y="0" width="56" height="30" hTextAlign="Center">
+							<expression><![CDATA[$F{Deposit Date}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="4b1d0ce9-3fcd-4c51-a8e4-d9a79541aeb7" width="56">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="64eb5aea-54fb-4bda-94d7-e9c23c2aa6de" x="0" y="0" width="56" height="30" bold="true" hTextAlign="Center">
+							<text><![CDATA[Created Date]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="b3d86634-5af8-44d1-b66b-b56dfcb67f3a" x="0" y="0" width="56" height="30" hTextAlign="Center">
+							<expression><![CDATA[$F{Created Date}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="1f6565a0-e9e7-40cb-a82d-ecfa865d0660" width="56">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="c2a158ef-d841-4c35-b289-50f9dadd7ec9" x="0" y="0" width="56" height="30" bold="true" hTextAlign="Center">
+							<text><![CDATA[Deposited By]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="39c0adc2-ecb4-45aa-b0a6-3d2b5df5820e" x="0" y="0" width="56" height="30" hTextAlign="Center">
+							<expression><![CDATA[$F{Deposited By}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+			</component>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+			<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+			<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+			<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+		</element>
+	</summary>
+</jasperReport>
