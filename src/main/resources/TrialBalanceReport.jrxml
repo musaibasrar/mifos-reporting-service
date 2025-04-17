@@ -1,0 +1,291 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="TrialBalanceReport" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2cd1715a-8f08-46f0-8cb3-81abff80144e">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<dataset name="Dataset" uuid="ade81015-95da-4053-81ec-c616a7a4d371">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<parameter name="startDate" class="java.sql.Date"/>
+		<parameter name="endDate" class="java.sql.Date"/>
+		<parameter name="officeId" class="java.lang.Integer"/>
+		<query language="sql"><![CDATA[SELECT * FROM (
+    SELECT debits.glcode AS glcode,
+           debits.name AS name,
+           IF(debits.type = 1 OR debits.type = 5,
+              IFNULL(debits.debitamount,0) - IFNULL(credits.creditamount,0), NULL) AS debit,
+           IF(debits.type = 2 OR debits.type = 3 OR debits.type = 4,
+              IFNULL(credits.creditamount,0) - IFNULL(debits.debitamount,0), NULL) AS credit
+    FROM (
+        SELECT acc_gl_account.gl_code AS glcode,
+               acc_gl_account.name AS name,
+               SUM(amount) AS debitamount,
+               acc_gl_account.classification_enum AS type
+        FROM acc_gl_journal_entry
+        JOIN acc_gl_account ON acc_gl_account.id = acc_gl_journal_entry.account_id
+        WHERE acc_gl_journal_entry.type_enum = 2
+          AND acc_gl_journal_entry.entry_date BETWEEN $P{startDate} AND $P{endDate}
+          AND (acc_gl_journal_entry.office_id = $P{officeId} OR $P{officeId} = 1)
+        GROUP BY glcode
+    ) debits
+    LEFT OUTER JOIN (
+        SELECT acc_gl_account.gl_code AS glcode,
+               acc_gl_account.name AS name,
+               SUM(amount) AS creditamount,
+               acc_gl_account.classification_enum AS type
+        FROM acc_gl_journal_entry
+        JOIN acc_gl_account ON acc_gl_account.id = acc_gl_journal_entry.account_id
+        WHERE acc_gl_journal_entry.type_enum = 1
+          AND acc_gl_journal_entry.entry_date BETWEEN $P{startDate} AND $P{endDate}
+          AND (acc_gl_journal_entry.office_id = $P{officeId} OR $P{officeId} = 1)
+        GROUP BY glcode
+    ) credits ON debits.glcode = credits.glcode
+
+    UNION
+
+    SELECT credits.glcode AS glcode,
+           credits.name AS name,
+           IF(credits.type = 1 OR credits.type = 5,
+              IFNULL(debits.debitamount,0) - IFNULL(credits.creditamount,0), NULL) AS debit,
+           IF(credits.type = 2 OR credits.type = 3 OR credits.type = 4,
+              IFNULL(credits.creditamount,0) - IFNULL(debits.debitamount,0), NULL) AS credit
+    FROM (
+        SELECT acc_gl_account.gl_code AS glcode,
+               acc_gl_account.name AS name,
+               SUM(amount) AS debitamount,
+               acc_gl_account.classification_enum AS type
+        FROM acc_gl_journal_entry
+        JOIN acc_gl_account ON acc_gl_account.id = acc_gl_journal_entry.account_id
+        WHERE acc_gl_journal_entry.type_enum = 2
+          AND acc_gl_journal_entry.entry_date BETWEEN $P{startDate} AND $P{endDate}
+          AND (acc_gl_journal_entry.office_id = $P{officeId} OR $P{officeId} = 1)
+        GROUP BY glcode
+    ) debits
+    RIGHT OUTER JOIN (
+        SELECT acc_gl_account.gl_code AS glcode,
+               acc_gl_account.name AS name,
+               SUM(amount) AS creditamount,
+               acc_gl_account.classification_enum AS type
+        FROM acc_gl_journal_entry
+        JOIN acc_gl_account ON acc_gl_account.id = acc_gl_journal_entry.account_id
+        WHERE acc_gl_journal_entry.type_enum = 1
+          AND acc_gl_journal_entry.entry_date BETWEEN $P{startDate} AND $P{endDate}
+          AND (acc_gl_journal_entry.office_id = $P{officeId} OR $P{officeId} = 1)
+        GROUP BY glcode
+    ) credits ON debits.glcode = credits.glcode
+) fullouterjoinresult
+ORDER BY glcode
+]]></query>
+		<field name="glcode" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="glcode"/>
+			<property name="com.jaspersoft.studio.field.label" value="glcode"/>
+		</field>
+		<field name="name" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="name"/>
+			<property name="com.jaspersoft.studio.field.label" value="name"/>
+		</field>
+		<field name="debit" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="debit"/>
+			<property name="com.jaspersoft.studio.field.label" value="debit"/>
+		</field>
+		<field name="credit" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="credit"/>
+			<property name="com.jaspersoft.studio.field.label" value="credit"/>
+		</field>
+	</dataset>
+	<parameter name="startDate" class="java.sql.Date"/>
+	<parameter name="endDate" class="java.sql.Date"/>
+	<parameter name="officeId" class="java.lang.Integer"/>
+	<query language="SQL"><![CDATA[SELECT * FROM (
+    SELECT debits.glcode AS glcode,
+           debits.name AS name,
+           IF(debits.type = 1 OR debits.type = 5,
+              IFNULL(debits.debitamount,0) - IFNULL(credits.creditamount,0), NULL) AS debit,
+           IF(debits.type = 2 OR debits.type = 3 OR debits.type = 4,
+              IFNULL(credits.creditamount,0) - IFNULL(debits.debitamount,0), NULL) AS credit
+    FROM (
+        SELECT acc_gl_account.gl_code AS glcode,
+               acc_gl_account.name AS name,
+               SUM(amount) AS debitamount,
+               acc_gl_account.classification_enum AS type
+        FROM acc_gl_journal_entry
+        JOIN acc_gl_account ON acc_gl_account.id = acc_gl_journal_entry.account_id
+        WHERE acc_gl_journal_entry.type_enum = 2
+          AND acc_gl_journal_entry.entry_date BETWEEN $P{startDate} AND $P{endDate}
+          AND (acc_gl_journal_entry.office_id = $P{officeId} OR $P{officeId} = 1)
+        GROUP BY glcode
+    ) debits
+    LEFT OUTER JOIN (
+        SELECT acc_gl_account.gl_code AS glcode,
+               acc_gl_account.name AS name,
+               SUM(amount) AS creditamount,
+               acc_gl_account.classification_enum AS type
+        FROM acc_gl_journal_entry
+        JOIN acc_gl_account ON acc_gl_account.id = acc_gl_journal_entry.account_id
+        WHERE acc_gl_journal_entry.type_enum = 1
+          AND acc_gl_journal_entry.entry_date BETWEEN $P{startDate} AND $P{endDate}
+          AND (acc_gl_journal_entry.office_id = $P{officeId} OR $P{officeId} = 1)
+        GROUP BY glcode
+    ) credits ON debits.glcode = credits.glcode
+
+    UNION
+
+    SELECT credits.glcode AS glcode,
+           credits.name AS name,
+           IF(credits.type = 1 OR credits.type = 5,
+              IFNULL(debits.debitamount,0) - IFNULL(credits.creditamount,0), NULL) AS debit,
+           IF(credits.type = 2 OR credits.type = 3 OR credits.type = 4,
+              IFNULL(credits.creditamount,0) - IFNULL(debits.debitamount,0), NULL) AS credit
+    FROM (
+        SELECT acc_gl_account.gl_code AS glcode,
+               acc_gl_account.name AS name,
+               SUM(amount) AS debitamount,
+               acc_gl_account.classification_enum AS type
+        FROM acc_gl_journal_entry
+        JOIN acc_gl_account ON acc_gl_account.id = acc_gl_journal_entry.account_id
+        WHERE acc_gl_journal_entry.type_enum = 2
+          AND acc_gl_journal_entry.entry_date BETWEEN $P{startDate} AND $P{endDate}
+          AND (acc_gl_journal_entry.office_id = $P{officeId} OR $P{officeId} = 1)
+        GROUP BY glcode
+    ) debits
+    RIGHT OUTER JOIN (
+        SELECT acc_gl_account.gl_code AS glcode,
+               acc_gl_account.name AS name,
+               SUM(amount) AS creditamount,
+               acc_gl_account.classification_enum AS type
+        FROM acc_gl_journal_entry
+        JOIN acc_gl_account ON acc_gl_account.id = acc_gl_journal_entry.account_id
+        WHERE acc_gl_journal_entry.type_enum = 1
+          AND acc_gl_journal_entry.entry_date BETWEEN $P{startDate} AND $P{endDate}
+          AND (acc_gl_journal_entry.office_id = $P{officeId} OR $P{officeId} = 1)
+        GROUP BY glcode
+    ) credits ON debits.glcode = credits.glcode
+) fullouterjoinresult
+ORDER BY glcode
+]]></query>
+	<field name="glcode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="glcode"/>
+		<property name="com.jaspersoft.studio.field.label" value="glcode"/>
+	</field>
+	<field name="name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="name"/>
+		<property name="com.jaspersoft.studio.field.label" value="name"/>
+	</field>
+	<field name="debit" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="debit"/>
+		<property name="com.jaspersoft.studio.field.label" value="debit"/>
+	</field>
+	<field name="credit" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="credit"/>
+		<property name="com.jaspersoft.studio.field.label" value="credit"/>
+	</field>
+	<background splitType="Stretch"/>
+	<summary height="433" splitType="Stretch">
+		<element kind="component" uuid="be1490cf-900a-4a57-89e3-3b69c89f0302" x="10" y="110" width="400" height="150">
+			<component kind="table">
+				<datasetRun uuid="774f8638-731f-45ed-9ccd-6d876ac4497d" subDataset="Dataset">
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<parameter name="startDate">
+						<expression><![CDATA[$P{startDate}]]></expression>
+					</parameter>
+					<parameter name="endDate">
+						<expression><![CDATA[$P{endDate}]]></expression>
+					</parameter>
+					<parameter name="officeId">
+						<expression><![CDATA[$P{officeId}]]></expression>
+					</parameter>
+				</datasetRun>
+				<column kind="single" uuid="e357b8a8-7e76-4db2-a35f-3564dd8000de" width="100">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="8cd9036e-11e3-41be-8291-6c52967c21da" x="0" y="0" width="100" height="30" bold="true" hTextAlign="Center">
+							<text><![CDATA[glcode]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="61fefbfd-b4c4-49b7-8ede-764039f4120c" x="0" y="0" width="100" height="30" hTextAlign="Center">
+							<expression><![CDATA[$F{glcode}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="81703c99-ae94-4677-9497-9d2a7c2fdf99" width="100">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="94710cae-599d-423b-80dd-f2ed9ad859c6" x="0" y="0" width="100" height="30" bold="true" hTextAlign="Center">
+							<text><![CDATA[name]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="41635296-0149-4be6-aa63-a2112e9da479" x="0" y="0" width="100" height="30" hTextAlign="Center">
+							<expression><![CDATA[$F{name}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="b90f0128-15c8-4fc7-9756-724bd80c5d95" width="100">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="becedda0-be3e-458a-9f3b-9ded83c86adc" x="0" y="0" width="100" height="30" bold="true" hTextAlign="Center">
+							<text><![CDATA[debit]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="0174b64c-8b9e-4cf0-b843-8ba5b5482261" x="0" y="0" width="100" height="30" hTextAlign="Center">
+							<expression><![CDATA[$F{debit}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="edfcc2a4-25ed-4c7b-ab8d-94f45cf98550" width="100">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="d83cdfc5-4fea-4ce0-b599-67ff6bcb811b" x="0" y="0" width="100" height="30" bold="true" hTextAlign="Center">
+							<text><![CDATA[credit]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="2f731012-8cfc-4921-aeaf-c544e570e8e5" x="0" y="0" width="100" height="30" hTextAlign="Center">
+							<expression><![CDATA[$F{credit}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+			</component>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+			<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+			<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+			<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+		</element>
+	</summary>
+</jasperReport>
