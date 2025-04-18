@@ -1,5 +1,6 @@
 package org.ideoholic.mrs.jasper;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -41,6 +42,10 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.util.JRSaver;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
+import net.sf.jasperreports.poi.export.JRXlsExporter;
 
 @Slf4j
 @Service
@@ -103,33 +108,29 @@ public class JasperReportService {
 
 	public byte[] generateReport(ReportGenerationParamsDto reportGenerationParamsDto, String reportId,
 			String fileFormat) {
-		String jrxmlPath = "classpath:";
+		String jasperReportFile = "classpath:reports/";
 		Map<String, Object> parameters = new HashMap<>();
 		Map<String, String> userParameters = reportGenerationParamsDto.getReportParams().stream()
 				.collect(Collectors.toMap(ReportGenParamDto::getParamId, ReportGenParamDto::getParamValue));
 
 		Report report = reportRepository.findByReportId(reportId).orElse(null);
 		if (report != null) {
-			jrxmlPath += report.getReportFile();
+			jasperReportFile += report.getReportFile();
 			List<ReportParamRelation> relations = reportParamRelationRepo.findAllByReportId(report.getId());
 			for (ReportParamRelation relation : relations) {
 				ReportParam reportParam = reportParamRepo.findById(relation.getReportParam().getId()).orElse(null);
 				String key = reportParam.getParamFieldName();
-				String value = null;
-				if (relation.getUseDefault() && !StringUtils.hasLength(reportParam.getParamId())) {
+				String value = userParameters.get(reportParam.getParamId());
+				if (!StringUtils.hasLength(value) && relation.getUseDefault()) {
 					value = reportParam.getDefaultValue();
-				} else {
-					value = userParameters.get(reportParam.getParamId());
 				}
 				log.debug("Values sent to report:: key:{}, value:{}", key, value);
 				parameters.put(key, value);
 			}
-			if (!parameters.isEmpty()) {
-				try {
-					return generateReportFromJrxml(jrxmlPath, parameters, fileFormat);
-				} catch (JRException | SQLException | IOException e) {
-					e.printStackTrace();
-				}
+			try {
+				return generateReportFromFile(jasperReportFile, parameters, fileFormat);
+			} catch (JRException | SQLException | IOException e) {
+				e.printStackTrace();
 			}
 		}
 		return null;
@@ -160,13 +161,14 @@ public class JasperReportService {
 		return null;
 	}
 
-	private byte[] generateReportFromJrxml(String jrxmlPath, Map<String, Object> parameters, String format)
+	private byte[] generateReportFromFile(String jasperFile, Map<String, Object> parameters, String format)
 			throws JRException, SQLException, IOException {
 		byte[] reportContent = null;
-		// Load and compile the JRXML
+		// Below two lines to load and compile the .jrxml file
 		// Resource resource = resourceLoader.getResource(jrxmlPath);
 		// JasperReport jasperReport = JasperCompileManager.compileReport(resource.getInputStream());
-		Resource resource = resourceLoader.getResource("classpath:reports/clientReport.jasper");
+		// Below two lines to load the .jasper file
+		Resource resource = resourceLoader.getResource(jasperFile);
 		JasperReport jasperReport = (JasperReport) JRLoader.loadObject(resource.getInputStream());
 
 		// Fill the report
@@ -186,31 +188,38 @@ public class JasperReportService {
 	}
 
 	private byte[] exportToXls(JasperPrint jasperPrint) {
-		/*
-		 * try { // Create a ByteArrayOutputStream to hold the Excel data in memory
-		 * ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		 * 
-		 * // Initialize the XLS exporter JRXlsExporter exporter = new JRXlsExporter();
-		 * 
-		 * // Set export parameters exporter.setExporterInput(new
-		 * SimpleExporterInput(jasperPrint)); exporter.setExporterOutput(new
-		 * SimpleOutputStreamExporterOutput(byteArrayOutputStream));
-		 * 
-		 * SimpleXlsReportConfiguration config = new SimpleXlsReportConfiguration();
-		 * config.setOnePagePerSheet(false); config.setDetectCellType(true);
-		 * config.setCollapseRowSpan(false); exporter.setConfiguration(config);
-		 * 
-		 * // Export the report to XLS format exporter.exportReport();
-		 * 
-		 * log.debug("Report exported to XLS successfully!");
-		 * 
-		 * // Convert the ByteArrayOutputStream to a byte array byte[] xlsData =
-		 * byteArrayOutputStream.toByteArray();
-		 * 
-		 * return xlsData;
-		 * 
-		 * } catch (Exception e) { e.printStackTrace(); }
-		 */
+
+		try {
+			// Create a ByteArrayOutputStream to hold the Excel data in memory
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+			// Initialize the XLS exporter
+			JRXlsExporter exporter = new JRXlsExporter();
+
+			// Set export parameters
+			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
+
+			SimpleXlsReportConfiguration config = new SimpleXlsReportConfiguration();
+			config.setOnePagePerSheet(false);
+			config.setDetectCellType(true);
+			config.setCollapseRowSpan(false);
+			exporter.setConfiguration(config);
+
+			// Export the report to XLS format
+			exporter.exportReport();
+
+			log.debug("Report exported to XLS successfully!");
+
+			// Convert the ByteArrayOutputStream to a byte array
+			byte[] xlsData = byteArrayOutputStream.toByteArray();
+
+			return xlsData;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		return null;
 	}
 
