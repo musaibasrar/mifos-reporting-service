@@ -38,8 +38,8 @@ public class ReportFileService {
 		List<Report> reportList = reportRepository.findAll();
 		
 		List<ReportDto> reportsDto = reportList.stream()
-				.map(report -> reportMapper.mapReport(report)) // Mapping to ReportDto
-				.collect(Collectors.toList());// Collecting the results into a list
+				.map(reportMapper::mapReport)
+				.collect(Collectors.toList());
 		
 		return ReportDtoList.builder()
 				.reports(reportsDto)
@@ -47,21 +47,15 @@ public class ReportFileService {
 	}
 	
 	public ReportDto updateReport(String reportId, ReportDto reportDto) {
-		// First fetch to ensure that the report exists
 		Report report = reportRepository.findByReportId(reportId).orElseThrow();
-
 		reportMapper.updateReport(report, reportDto);
-
 		reportRepository.save(report);
-
 		return reportMapper.mapReport(report);
 	}
 	
 	public ReportDto deleteReport(String reportId) {
 		Report report = reportRepository.findByReportId(reportId).orElseThrow();
-
 		reportRepository.deleteById(report.getId());
-
 		return reportMapper.mapReport(report);
 	}
 
