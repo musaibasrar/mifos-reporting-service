@@ -18,5 +18,11 @@ public class WebViewController {
         model.addAttribute("reports", reportService.getAllReports().getReports());
         return "home";
     }
-  
+
+    @GetMapping("/report/{reportId}")
+    public String reportForm(@PathVariable String reportId, Model model) {
+        model.addAttribute("report", reportService.getReportById(reportId));
+        model.addAttribute("params", reportService.getEnabledReportParameters(reportId).getReportParams());
+        return "report-form";
+    }
 } 
