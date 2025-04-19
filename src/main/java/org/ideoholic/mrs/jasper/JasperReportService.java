@@ -3,8 +3,6 @@ package org.ideoholic.mrs.jasper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +18,6 @@ import org.ideoholic.mrs.dto.ReportGenerationParamsDto;
 import org.ideoholic.mrs.dto.ReportParamDto;
 import org.ideoholic.mrs.dto.ReportParamDtoList;
 import org.ideoholic.mrs.mappers.ReportParamMapper;
-import org.ideoholic.mrs.model.ParameterType;
 import org.ideoholic.mrs.model.Report;
 import org.ideoholic.mrs.model.ReportParam;
 import org.ideoholic.mrs.model.ReportParamRelation;
@@ -162,6 +159,7 @@ public class JasperReportService {
 		case "xml" -> reportContent = JasperExportManager.exportReportToXml(jasperPrint).getBytes();
 		case "excel" -> reportContent = exportToXls(jasperPrint);
 		case "xls" -> reportContent = exportToXls(jasperPrint);
+		case "xlsx" -> reportContent = exportToXls(jasperPrint);
 		default -> throw new IllegalArgumentException("Unknown report format:" + format);
 		}
 
