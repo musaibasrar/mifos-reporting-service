@@ -3,6 +3,8 @@ package org.ideoholic.mrs.jasper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ import org.ideoholic.mrs.dto.ReportGenerationParamsDto;
 import org.ideoholic.mrs.dto.ReportParamDto;
 import org.ideoholic.mrs.dto.ReportParamDtoList;
 import org.ideoholic.mrs.mappers.ReportParamMapper;
+import org.ideoholic.mrs.model.ParameterType;
 import org.ideoholic.mrs.model.Report;
 import org.ideoholic.mrs.model.ReportParam;
 import org.ideoholic.mrs.model.ReportParamRelation;
@@ -28,6 +31,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -63,6 +67,7 @@ public class JasperReportService {
 	@Autowired
 	private ReportParamRelationRepository reportParamRelationRepo;
 
+	@SneakyThrows
 	public byte[] generateReport(ReportGenerationParamsDto reportGenerationParamsDto, String reportId,
 			String fileFormat) {
 		String jasperReportFile = "classpath:reports/";
@@ -82,7 +87,26 @@ public class JasperReportService {
 					value = reportParam.getDefaultValue();
 				}
 				log.debug("Values sent to report:: key:{}, value:{}", key, value);
-				parameters.put(key, value);
+				
+				switch(reportParam.getParamType()) {
+				case INTEGER:
+					parameters.put(key, Integer.parseInt(value));
+					break;
+				case FLOAT:
+					parameters.put(key, Float.parseFloat(value));
+					break;
+				case DATE:
+					java.sql.Date sqlDate = java.sql.Date.valueOf(value);
+					parameters.put(key, sqlDate);
+					break;
+				case BOOLEAN:
+					parameters.put(key, Boolean.parseBoolean(value));
+					break;
+				default:
+					parameters.put(key, value);
+					break;
+				}
+				
 			}
 			try {
 				return generateReportFromFile(jasperReportFile, parameters, fileFormat);
