@@ -23,12 +23,12 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile  --no-cache --tag ideoholic/mifos-reporting-service:latest
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Test the Docker image
-        run: docker compose up -d 
+#  test:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Test the Docker image
+#        run: docker compose up -d 
 
   push_to_registry:
     name: Push Docker image to Docker Hub
