@@ -1,0 +1,157 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="Savings_Balance_Summary_By_Products" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2ccb139f-dd68-48f1-a12c-92b5de5d747d">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<dataset name="SavingsBalanceByProductDataset" uuid="26081e57-e14c-4a35-a9c5-bc59040b99ab">
+		<property name="com.jaspersoft.studio.data.sql.tables" value="bV9zYXZpbmdzX2FjY291bnQgLDE0OCwxNSwzYzExYzViYS05YjMwLTQyMDktYmUwOS02NjFmMGRh&#xa;YzA2Zjk7bV9zYXZpbmdzX3Byb2R1Y3QgLDQwOSwxNSxlOTQ4Nzc0Yi0xZWI0LTQ1NzEtYmY0ZC00&#xa;NDhlOTNmMTMwZjM7bV9jbGllbnQgLDE1LDE1LGIwMWM2M2MzLTU5ODUtNDM0My04MmEzLWRmYWUw&#xa;YTJiNDkzNDs="/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
+		<parameter name="officeId" class="java.lang.Integer"/>
+		<query language="SQL"><![CDATA[SELECT 
+  savingproduct.short_name AS shortname,
+  savingproduct.name AS fullname,
+  SUM(savingaccount.account_balance_derived) AS balanceamount
+FROM m_savings_account savingaccount
+LEFT JOIN m_savings_product savingproduct 
+  ON savingproduct.id = savingaccount.product_id
+LEFT JOIN m_client client 
+  ON client.id = savingaccount.client_id
+WHERE savingaccount.status_enum = 300 
+  AND (client.office_id = $P{officeId} OR $P{officeId} = 1)
+GROUP BY savingaccount.product_id
+ORDER BY balanceamount DESC
+]]></query>
+		<field name="shortname" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="short_name"/>
+			<property name="com.jaspersoft.studio.field.label" value="shortname"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_savings_product"/>
+		</field>
+		<field name="fullname" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.name" value="name"/>
+			<property name="com.jaspersoft.studio.field.label" value="fullname"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="m_savings_product"/>
+		</field>
+		<field name="balanceamount" class="java.math.BigDecimal">
+			<property name="com.jaspersoft.studio.field.name" value="balanceamount"/>
+			<property name="com.jaspersoft.studio.field.label" value="balanceamount"/>
+		</field>
+	</dataset>
+	<parameter name="officeId" class="java.lang.Integer"/>
+	<query language="SQL"><![CDATA[SELECT 
+  savingproduct.short_name AS shortname,
+  savingproduct.name AS fullname,
+  SUM(savingaccount.account_balance_derived) AS balanceamount
+FROM m_savings_account savingaccount
+LEFT JOIN m_savings_product savingproduct 
+  ON savingproduct.id = savingaccount.product_id
+LEFT JOIN m_client client 
+  ON client.id = savingaccount.client_id
+WHERE savingaccount.status_enum = 300 
+  AND (client.office_id = $P{officeId} OR $P{officeId} = 1)
+GROUP BY savingaccount.product_id
+ORDER BY balanceamount DESC
+
+]]></query>
+	<field name="shortname" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="short_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="shortname"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_savings_product"/>
+	</field>
+	<field name="fullname" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="name"/>
+		<property name="com.jaspersoft.studio.field.label" value="fullname"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_savings_product"/>
+	</field>
+	<field name="balanceamount" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="balanceamount"/>
+		<property name="com.jaspersoft.studio.field.label" value="balanceamount"/>
+	</field>
+	<background splitType="Stretch"/>
+	<summary height="421" splitType="Stretch">
+		<element kind="component" uuid="0455115b-6fe1-4bdb-8c66-cb4526617796" x="40" y="120" width="390" height="150">
+			<component kind="table">
+				<datasetRun uuid="369a0b48-5c99-4ccd-9224-a64ac6dfe22d" subDataset="SavingsBalanceByProductDataset">
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<parameter name="officeId">
+						<expression><![CDATA[$P{officeId}]]></expression>
+					</parameter>
+				</datasetRun>
+				<column kind="single" uuid="afafd69c-bb2b-41d0-b43e-4b40a87f98fd" width="132">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="f90f6132-c805-4ba3-8abd-2ecdc665d71f" x="0" y="0" width="132" height="30" bold="true" hTextAlign="Center">
+							<text><![CDATA[shortname]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="a5fbddcc-01dd-4662-a3dc-4305873216af" x="0" y="0" width="132" height="30" hTextAlign="Center">
+							<expression><![CDATA[$F{shortname}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="46a2bce0-695f-465f-988b-2820e67438bd" width="132">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="b55fe2e1-2fa5-484c-bac9-d815282255d0" x="0" y="0" width="132" height="30" bold="true" hTextAlign="Center">
+							<text><![CDATA[fullname]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="7f15684e-2663-488f-90c0-b92fdbeba0a9" x="0" y="0" width="132" height="30" hTextAlign="Center">
+							<expression><![CDATA[$F{fullname}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+				<column kind="single" uuid="352dad29-b5bf-4969-89aa-8e92608bbe6f" width="126">
+					<tableHeader height="30" style="Table_TH"/>
+					<tableFooter height="30" style="Table_TH"/>
+					<columnHeader height="30" style="Table_CH">
+						<element kind="staticText" uuid="f7182e1a-aec4-4465-b93f-5c38308bfb6c" x="0" y="0" width="126" height="30" bold="true" hTextAlign="Center">
+							<text><![CDATA[balanceamount]]></text>
+						</element>
+					</columnHeader>
+					<columnFooter height="30" style="Table_CH"/>
+					<detailCell height="30" style="Table_TD">
+						<element kind="textField" uuid="2f3564ec-b59f-44c7-995d-60fb159e5e17" x="0" y="0" width="126" height="30" hTextAlign="Center">
+							<expression><![CDATA[$F{balanceamount}]]></expression>
+						</element>
+					</detailCell>
+				</column>
+			</component>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+			<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+			<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+			<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+		</element>
+	</summary>
+</jasperReport>
