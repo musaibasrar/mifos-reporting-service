@@ -1,5 +1,5 @@
 <!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
-<jasperReport name="All_loans_listing" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2bcc905a-e74c-43c4-b38d-bf7fa0ebb9e8">
+<jasperReport name="All_loans_listing" language="java" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2bcc905a-e74c-43c4-b38d-bf7fa0ebb9e8">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
@@ -36,8 +36,7 @@
 		<parameter name="officeId" class="java.lang.Integer"/>
 		<parameter name="loanProductId" class="java.lang.Integer"/>
 		<parameter name="loanOfficerId" class="java.lang.Integer"/>
-		<query language="SQL"><![CDATA[
-		SELECT 
+		<query language="SQL"><![CDATA[SELECT 
     CONCAT(REPEAT('..', 
     ((LENGTH(ounder.hierarchy) - LENGTH(REPLACE(ounder.hierarchy, '.', '')) - 1))), ounder.name) AS "Office/Branch",
 
@@ -84,7 +83,7 @@ WHERE o.id = $P{officeId}
   AND (IFNULL(l.loan_officer_id, -10) = $P{loanOfficerId} OR $P{loanOfficerId} = -1)
 
 GROUP BY l.id
-ORDER BY l.currency_code, c.account_no, l.account_no
+ORDER BY ounder.hierarchy, l.currency_code, c.account_no, l.account_no
 
 ]]></query>
 		<field name="Office/Branch" class="java.lang.String">
@@ -203,9 +202,7 @@ ORDER BY l.currency_code, c.account_no, l.account_no
 	<parameter name="officeId" class="java.lang.Integer"/>
 	<parameter name="loanProductId" class="java.lang.Integer"/>
 	<parameter name="loanOfficerId" class="java.lang.Integer"/>
-	<query language="SQL"><![CDATA[
-	
-	SELECT 
+	<query language="SQL"><![CDATA[SELECT 
     CONCAT(REPEAT('..', 
     ((LENGTH(ounder.hierarchy) - LENGTH(REPLACE(ounder.hierarchy, '.', '')) - 1))), ounder.name) AS "Office/Branch",
 
@@ -252,7 +249,7 @@ WHERE o.id = $P{officeId}
   AND (IFNULL(l.loan_officer_id, -10) = $P{loanOfficerId} OR $P{loanOfficerId} = -1)
 
 GROUP BY l.id
-ORDER BY  l.currency_code, c.account_no, l.account_no
+ORDER BY ounder.hierarchy, l.currency_code, c.account_no, l.account_no
 ]]></query>
 	<field name="Office/Branch" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="Office/Branch"/>
@@ -368,10 +365,22 @@ ORDER BY  l.currency_code, c.account_no, l.account_no
 	<background splitType="Stretch"/>
 	<detail>
 		<band height="216" splitType="Stretch">
-			<element kind="component" uuid="b026d25d-c319-460c-9d2a-1ebdf1f49f48" x="0" y="0" width="550" height="170">
-				<component kind="table">
-					<datasetRun uuid="d060c4a5-1c0c-47dd-acf1-def12da3a818" subDataset="Dataset1">
+			<element kind="component" uuid="b026d25d-c319-460c-9d2a-1ebdf1f49f48" x="0" y="0" width="550" height="150">
+				<component kind="table" whenNoDataType="AllSectionsNoDetail">
+					<datasetRun uuid="0f508a40-7d33-4d20-9ff8-8c82c02dd9e4" subDataset="Dataset1">
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+						<parameter name="currentUserHierarchy">
+							<expression><![CDATA[$P{currentUserHierarchy}]]></expression>
+						</parameter>
+						<parameter name="officeId">
+							<expression><![CDATA[$P{officeId}]]></expression>
+						</parameter>
+						<parameter name="loanProductId">
+							<expression><![CDATA[$P{loanProductId}]]></expression>
+						</parameter>
+						<parameter name="loanOfficerId">
+							<expression><![CDATA[$P{loanOfficerId}]]></expression>
+						</parameter>
 					</datasetRun>
 					<column kind="single" uuid="4992e695-72e9-46ae-b25d-95541c0548c8" width="24">
 						<tableHeader height="30" style="Table_TH"/>
