@@ -58,8 +58,11 @@ jobs:
         with:
           context: "{{defaultContext}}"
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: docker.io/ideoholic/mifos-reporting-service:latest
+          labels: |
+            version=1.0
+            description="Mifos Reporting Service"
+            maintainer="info@ideoholic.com"
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
