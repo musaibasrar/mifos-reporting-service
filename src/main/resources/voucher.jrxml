@@ -115,11 +115,11 @@ WHERE je.transaction_id = $P{voucher_id}
 		<element kind="staticText" uuid="1021e017-5bde-417f-b5a2-9091fdb3bde8" x="100" y="10" width="455" height="20" fontName="Times New Roman" fontSize="14.0" bold="true" hTextAlign="Center">
 			<text><![CDATA[Al-Zariya Credit Cum Consumers Co.Op.So.Ltd, Palanpur ]]></text>
 		</element>
-		<element kind="image" uuid="b2e494c0-2c7c-4c81-8c83-7ce49f2194d3" x="10" y="0" width="80" height="75">
-			<expression><![CDATA["/photo_6215513552664512775_x.jpg"]]></expression>
-		</element>
 		<element kind="staticText" uuid="c2c37323-268d-4ab5-8cfa-fec10aa70da6" x="100" y="30" width="455" height="30" fontName="Times New Roman">
 			<text><![CDATA[Dukan No. 07, Second Floor, AL - Hayat Complex, Dhalwas, Palanpur -385001, District - Banaskantha, Gujarat]]></text>
+		</element>
+		<element kind="image" uuid="14564e67-1624-4f2e-85a3-92994eba8961" x="30" y="0" width="70" height="60">
+			<expression><![CDATA["logo.jpg"]]></expression>
 		</element>
 	</title>
 	<pageHeader height="57">
