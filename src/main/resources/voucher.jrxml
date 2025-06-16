@@ -1,0 +1,171 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="VoucherReceipt" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6f3b1c52-4581-47ae-8be6-e0c29f2f4ba3">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="voucher_id" class="java.lang.String"/>
+	<query language="sql"><![CDATA[SELECT
+    je.transaction_id,
+    je.entry_date,
+    je.type_enum,
+    je.amount,
+    je.account_id,
+    je.description,
+    COALESCE(pd.check_number, 'NA') AS cheque_no,
+    pd.bank_number AS bank_no,
+    coa.name AS account_name
+FROM acc_gl_journal_entry je
+LEFT JOIN acc_gl_account coa ON je.account_id = coa.id
+LEFT JOIN m_payment_detail pd 
+    ON je.payment_details_id = pd.id
+WHERE je.transaction_id = $P{voucher_id}
+ ORDER BY je.id ASC
+]]></query>
+	<field name="transaction_id" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="transaction_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="transaction_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="acc_gl_journal_entry"/>
+	</field>
+	<field name="entry_date" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="entry_date"/>
+		<property name="com.jaspersoft.studio.field.label" value="entry_date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="acc_gl_journal_entry"/>
+	</field>
+	<field name="type_enum" class="java.lang.Short">
+		<property name="com.jaspersoft.studio.field.name" value="type_enum"/>
+		<property name="com.jaspersoft.studio.field.label" value="type_enum"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="acc_gl_journal_entry"/>
+	</field>
+	<field name="amount" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="amount"/>
+		<property name="com.jaspersoft.studio.field.label" value="amount"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="acc_gl_journal_entry"/>
+	</field>
+	<field name="account_id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="account_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="account_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="acc_gl_journal_entry"/>
+	</field>
+	<field name="description" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="description"/>
+		<property name="com.jaspersoft.studio.field.label" value="description"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="acc_gl_journal_entry"/>
+	</field>
+	<field name="cheque_no" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="cheque_no"/>
+		<property name="com.jaspersoft.studio.field.label" value="cheque_no"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_payment_detail"/>
+	</field>
+	<field name="bank_no" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="bank_number"/>
+		<property name="com.jaspersoft.studio.field.label" value="bank_no"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_payment_detail"/>
+	</field>
+	<field name="account_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="name"/>
+		<property name="com.jaspersoft.studio.field.label" value="account_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="acc_gl_account"/>
+	</field>
+	<variable name="IssueDate" calculation="System" class="java.util.Date">
+		<expression><![CDATA[new java.util.Date()]]></expression>
+	</variable>
+	<variable name="TotalAmount" calculation="Sum" class="java.math.BigDecimal">
+		<expression><![CDATA[$F{amount}
+]]></expression>
+	</variable>
+	<group name="TransactionGroup">
+		<expression><![CDATA[$F{transaction_id}]]></expression>
+		<groupFooter>
+			<band height="142">
+				<element kind="rectangle" uuid="62a6d088-6b6b-4997-a655-114832f15927" x="0" y="0" width="555" height="20"/>
+				<element kind="staticText" uuid="e9eaa4be-3e48-4fe4-88ce-88be1bdd3eae" x="0" y="0" width="330" height="20" fontSize="12.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
+					<text><![CDATA[Total]]></text>
+				</element>
+				<element kind="textField" uuid="2d7b02af-8971-43b3-af2e-14759e88e54d" x="400" y="0" width="155" height="20" fontSize="12.0" evaluationTime="Group" pattern="#,##0.00" evaluationGroup="TransactionGroup" hTextAlign="Right">
+					<expression><![CDATA[$V{TotalAmount}.divide(new java.math.BigDecimal(2))
+]]></expression>
+				</element>
+				<element kind="staticText" uuid="67e2c803-fdea-46ea-a336-99df09532eb1" x="0" y="30" width="60" height="15" fontName="Times New Roman" fontSize="12.0">
+					<text><![CDATA[Narration:]]></text>
+				</element>
+				<element kind="textField" uuid="5d29813a-b475-4434-809b-be3125c05021" x="60" y="30" width="455" height="30" fontSize="12.0" textAdjust="StretchHeight">
+					<expression><![CDATA[$F{description}]]></expression>
+				</element>
+				<element kind="staticText" uuid="37d262f2-3638-4e3b-90bf-cebe6c1dc188" x="0" y="65" width="80" height="15" fontName="Times New Roman" fontSize="12.0">
+					<text><![CDATA[Cheque No :]]></text>
+				</element>
+				<element kind="textField" uuid="727eea8c-dbf9-4aa0-9b00-c74be6fffd67" x="80" y="65" width="80" height="15" fontName="Times New Roman" fontSize="12.0">
+					<expression><![CDATA[$F{cheque_no}]]></expression>
+				</element>
+				<element kind="staticText" uuid="7c9be7df-dae0-4279-9bd7-9869bc0350e2" x="330" y="65" width="70" height="15" fontName="Times New Roman" fontSize="12.0">
+					<text><![CDATA[Issue Date :]]></text>
+				</element>
+				<element kind="textField" uuid="3c8aee9d-511e-4366-8f27-69c3a030d259" x="410" y="65" width="150" height="15" fontName="Times New Roman" fontSize="12.0" pattern="dd.MM.yyyy">
+					<expression><![CDATA[new java.util.Date()]]></expression>
+				</element>
+				<element kind="staticText" uuid="54e89560-72d2-4b0a-a667-df461326ce3b" x="210" y="120" width="345" height="20" fontName="Times New Roman" fontSize="12.0" bold="true" hTextAlign="Center">
+					<text><![CDATA[       Received By                               Verified By]]></text>
+				</element>
+				<element kind="staticText" uuid="e20236f1-89a9-4a58-98fd-8e9d3ad54aaf" x="0" y="120" width="180" height="20" fontName="Times New Roman" fontSize="12.0" bold="true">
+					<text><![CDATA[Cashier/Branch Manager  ]]></text>
+				</element>
+			</band>
+		</groupFooter>
+	</group>
+	<title height="116">
+		<element kind="staticText" uuid="1021e017-5bde-417f-b5a2-9091fdb3bde8" x="100" y="10" width="455" height="20" fontName="Times New Roman" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[Al-Zariya Credit Cum Consumers Co.Op.So.Ltd, Palanpur ]]></text>
+		</element>
+		<element kind="staticText" uuid="c2c37323-268d-4ab5-8cfa-fec10aa70da6" x="100" y="30" width="455" height="30" fontName="Times New Roman">
+			<text><![CDATA[Dukan No. 07, Second Floor, AL - Hayat Complex, Dhalwas, Palanpur -385001, District - Banaskantha, Gujarat]]></text>
+		</element>
+		<element kind="image" uuid="14564e67-1624-4f2e-85a3-92994eba8961" x="30" y="0" width="70" height="60">
+			<expression><![CDATA["logo.jpg"]]></expression>
+		</element>
+	</title>
+	<pageHeader height="57">
+		<element kind="staticText" uuid="940a03cb-94ff-4144-afbd-0a718c43cc32" x="0" y="0" width="80" height="15" fontName="Times New Roman" fontSize="12.0" bold="true">
+			<text><![CDATA[Date :]]></text>
+		</element>
+		<element kind="textField" uuid="c3eb1dbe-6dd4-4073-8ce5-3c840755a6ca" x="40" y="0" width="100" height="15" fontName="Times New Roman" fontSize="12.0" pattern="dd.MM.yyyy">
+			<expression><![CDATA[$F{entry_date}]]></expression>
+		</element>
+		<element kind="staticText" uuid="2cd24570-b244-430d-a323-94724630cbfc" x="370" y="0" width="90" height="15" fontName="Times New Roman" fontSize="12.0" bold="true">
+			<text><![CDATA[voucher no :]]></text>
+		</element>
+		<element kind="textField" uuid="eec0da00-aefc-4554-bfb7-1651e535f2fa" x="440" y="0" width="100" height="15" fontName="Times New Roman" fontSize="12.0">
+			<expression><![CDATA[$F{transaction_id}]]></expression>
+		</element>
+		<element kind="rectangle" uuid="26bef15c-3527-415f-ad1d-bf94fe24cf19" x="370" y="20" width="110" height="30"/>
+		<element kind="textField" uuid="ace8306d-e386-4c1c-a58a-0a7c6e5c840c" x="370" y="25" width="110" height="20" fontName="Times New Roman" fontSize="12.0" evaluationTime="Group" evaluationGroup="TransactionGroup" hTextAlign="Center">
+			<expression><![CDATA["Rs. " + String.format("%,.2f", ($V{TotalAmount} != null ? $V{TotalAmount}.doubleValue() / 2 : 0.0)) + "/-"
+]]></expression>
+		</element>
+	</pageHeader>
+	<columnHeader height="20">
+		<element kind="rectangle" uuid="4b0cbcd7-9378-40cd-9128-b517838f1bb8" mode="Opaque" x="0" y="0" width="555" height="20" backcolor="#E0E0E0"/>
+		<element kind="staticText" uuid="678f5a18-ea94-4ed2-a8f7-4e66efcf2414" x="0" y="0" width="300" height="20" forecolor="#000000" backcolor="#E0E0E0" fontSize="12.0" bold="true" hTextAlign="Left">
+			<text><![CDATA[Account]]></text>
+		</element>
+		<element kind="staticText" uuid="6671cc6f-4f9a-4958-80cb-7add91d727b0" x="300" y="0" width="100" height="20" fontSize="12.0" bold="true" hTextAlign="Left">
+			<text><![CDATA[Type]]></text>
+		</element>
+		<element kind="staticText" uuid="2a790043-9785-4f94-af09-ab00c7405a85" x="400" y="0" width="155" height="20" fontSize="12.0" bold="true" hTextAlign="Right">
+			<text><![CDATA[Amount]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<element kind="rectangle" uuid="13a286d3-4613-4666-a998-b96ad2478c04" x="0" y="0" width="555" height="20"/>
+			<element kind="textField" uuid="dc33eac8-02e2-4f8c-95eb-c197f85b7b25" x="0" y="0" width="300" height="20" fontSize="12.0">
+				<expression><![CDATA[$F{account_name}]]></expression>
+			</element>
+			<element kind="textField" uuid="7c5900d9-ecaa-473e-ae11-f5dc4ce4e2bd" x="300" y="0" width="100" height="20" fontSize="12.0">
+				<expression><![CDATA[$F{type_enum} == 1 ? "Credit" : "Debit"]]></expression>
+			</element>
+			<element kind="textField" uuid="57c25c5e-b998-41e9-821e-a6c68af4feb2" x="400" y="0" width="155" height="20" fontSize="12.0" pattern="#,##0.00" hTextAlign="Right">
+				<expression><![CDATA[$F{amount}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<pageFooter height="50"/>
+</jasperReport>
