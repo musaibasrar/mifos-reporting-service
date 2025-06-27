@@ -1,0 +1,112 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="passbook_transaction" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a11d6c3f-5db9-4f99-8b75-f178c145c3fd">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="account_no" class="java.lang.String"/>
+	<parameter name="from_date" class="java.sql.Date"/>
+	<query language="sql"><![CDATA[SELECT 
+    DATE_FORMAT(mst.transaction_date, '%d/%m/%Y') AS txn_date,
+
+    IFNULL(mn.note, 
+        CASE 
+            WHEN mst.transaction_type_enum = 1 THEN 'Deposit'
+            WHEN mst.transaction_type_enum = 2 THEN 'Withdrawal'
+            ELSE 'Other'
+        END
+    ) AS particulars,
+
+    CASE 
+        WHEN mst.transaction_type_enum = 2 THEN FORMAT(mst.amount, 2)
+        ELSE '' 
+    END AS withdrawal_amount,
+
+    CASE 
+        WHEN mst.transaction_type_enum = 1 THEN FORMAT(mst.amount, 2)
+        ELSE '' 
+    END AS deposit_amount,
+
+    FORMAT(mst.running_balance_derived, 2) AS running_balance_derived
+
+FROM m_savings_account_transaction mst
+JOIN m_savings_account msa 
+    ON msa.id = mst.savings_account_id
+LEFT JOIN m_note mn 
+    ON mn.savings_account_transaction_id = mst.id
+   AND mn.note_type_enum = 800  
+
+WHERE msa.account_no = $P{account_no}
+  AND mst.transaction_date >= $P{from_date}
+
+ORDER BY mst.transaction_date ASC;
+
+
+]]></query>
+	<field name="txn_date" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="txn_date"/>
+		<property name="com.jaspersoft.studio.field.label" value="txn_date"/>
+	</field>
+	<field name="particulars" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="particulars"/>
+		<property name="com.jaspersoft.studio.field.label" value="particulars"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_note"/>
+	</field>
+	<field name="withdrawal_amount" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="withdrawal_amount"/>
+		<property name="com.jaspersoft.studio.field.label" value="withdrawal_amount"/>
+	</field>
+	<field name="deposit_amount" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="deposit_amount"/>
+		<property name="com.jaspersoft.studio.field.label" value="deposit_amount"/>
+	</field>
+	<field name="running_balance_derived" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="running_balance_derived"/>
+		<property name="com.jaspersoft.studio.field.label" value="running_balance_derived"/>
+	</field>
+	<group name="RowLimiter" startNewPage="true">
+		<expression><![CDATA[($V{REPORT_COUNT} - 1) / 10]]></expression>
+		<groupHeader>
+			<band height="13"/>
+		</groupHeader>
+		<groupFooter>
+			<band height="24"/>
+		</groupFooter>
+	</group>
+	<columnHeader height="26">
+		<element kind="staticText" uuid="39b50509-f8b6-45b2-a2c1-55b7a1babddc" x="0" y="0" width="80" height="20" fontName="Times New Roman" bold="true">
+			<text><![CDATA[Date]]></text>
+		</element>
+		<element kind="staticText" uuid="f22433b2-ce68-4990-a602-f40b8115cca4" x="80" y="0" width="200" height="20" fontName="Times New Roman" bold="true">
+			<text><![CDATA[Particulars]]></text>
+		</element>
+		<element kind="staticText" uuid="09125c62-ce77-4c36-84e9-5a419c314027" x="280" y="0" width="80" height="20" fontName="Times New Roman" bold="true">
+			<text><![CDATA[Withdrawal]]></text>
+		</element>
+		<element kind="staticText" uuid="1b6a4680-b834-4852-aa58-6a6643328714" x="360" y="0" width="80" height="20" fontName="Times New Roman" bold="true">
+			<text><![CDATA[Deposit]]></text>
+		</element>
+		<element kind="staticText" uuid="9de25af9-2515-40ca-838b-121245afe129" x="440" y="0" width="100" height="20" fontName="Times New Roman" bold="true">
+			<text><![CDATA[Balance]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="31" splitType="Prevent">
+			<element kind="textField" uuid="8c6416f1-7a76-4fe5-b139-97a73fcf5fbf" x="0" y="0" width="80" height="20" fontName="Times New Roman">
+				<expression><![CDATA[$F{txn_date}]]></expression>
+			</element>
+			<element kind="textField" uuid="b54b0552-2eb6-45e8-9842-2345e4d361d8" x="80" y="0" width="200" height="20" fontName="Times New Roman">
+				<expression><![CDATA[$F{particulars}
+]]></expression>
+			</element>
+			<element kind="textField" uuid="eae45de6-7cd3-42d0-bb18-a58447bd1368" x="280" y="0" width="80" height="20" fontName="Times New Roman" pattern="#,##0.00">
+				<expression><![CDATA[$F{withdrawal_amount}]]></expression>
+			</element>
+			<element kind="textField" uuid="48506919-0aed-4bf3-bc75-980b7e62ccdc" x="360" y="0" width="80" height="20" fontName="Times New Roman" pattern="#,##0.00">
+				<expression><![CDATA[$F{deposit_amount}]]></expression>
+			</element>
+			<element kind="textField" uuid="6745c279-c624-4fb0-86d4-375ba34dbe56" x="440" y="0" width="100" height="20" fontName="Times New Roman" pattern="#,##0.00">
+				<expression><![CDATA[$F{running_balance_derived}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<summary height="20"/>
+</jasperReport>
