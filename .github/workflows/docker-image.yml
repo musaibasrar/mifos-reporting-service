@@ -3,8 +3,8 @@ name: Create and publish a Docker image
 on:
   push:
     branches: [ "develop" ]
-  pull_request:
-    branches: [ "develop" ]
+#  pull_request:
+#    branches: [ "develop" ]
   workflow_dispatch:
 
 env:
@@ -34,6 +34,7 @@ jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
+#    if: github.ref == 'refs/heads/develop'  # Only run this job on push to develop branch
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
