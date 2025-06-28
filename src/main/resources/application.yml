@@ -1,11 +1,11 @@
 spring:
     application:
-        name: mifos_reporting
+        name: ${SPRING_APPLICATION_NAME:mifos_reporting}
     datasource:
-        driverClassName: org.h2.Driver
-        password: ''
-        jdbc-url: jdbc:h2:file:~/reports_db
-        username: sa
+        driverClassName: ${SPRING_DATASOURCE_DRIVERCLASSNAME:org.h2.Driver}
+        password: ${SPRING_DATASOURCE_PASSWORD:}  # Default to empty password
+        jdbc-url: ${SPRING_DATASOURCE_JDBC_URL:jdbc:h2:file:/data/reports_db} 
+        username: ${SPRING_DATASOURCE_USERNAME:sa}
     h2:
         console:
             enabled: true
@@ -21,7 +21,7 @@ spring:
 
 report:
     datasource:
-        driver-class-name: 'org.mariadb.jdbc.Driver'
-        jdbc-url: jdbc:mariadb://localhost:3306/mifos
-        password: root
-        username: root
+        driver-class-name: ${MIFOS_DB_DRIVERCLASSNAME:org.mariadb.jdbc.Driver}
+        jdbc-url: ${MIFOS_DB_JDBC_URL:jdbc:mariadb://localhost:3306/mifos}
+        password: ${MIFOS_DB_PASSWORD:root}
+        username: ${MIFOS_DB_USERNAME:root}

@@ -1,0 +1,36 @@
+version: '3.3'
+
+
+services:
+  mifos_reporting:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mifos-reporting-service
+    ports:
+      - "9001:8080"  # Map external port 8080 to internal port 8080
+    volumes:
+      - mifos-reports-data:/data
+    environment:
+      SPRING_APPLICATION_NAME: mifos_reporting
+      SPRING_DATASOURCE_DRIVERCLASSNAME: org.h2.Driver
+      SPRING_DATASOURCE_PASSWORD: ''
+      SPRING_DATASOURCE_JDBC_URL: jdbc:h2:file:/data/reports_db
+      SPRING_DATASOURCE_USERNAME: sa
+      MIFOS_DB_DRIVERCLASSNAME: org.mariadb.jdbc.Driver
+      MIFOS_DB_JDBC_URL:jdbc: mariadb://localhost:3306/mifos
+      MIFOS_DB_PASSWORD: root
+      MIFOS_DB_USERNAME: root
+
+
+volumes:
+  mifos-reports-data:
+
+
+#   /var/lib/docker/volumes/
+#  └── mifos-reports-data/
+#      └── _data/
+#          └── reports_db  # This is where your H2 database files would be stored
+
+# Start the application using: docker-compose up --build -d
+# Stop the application using: docker-compose down
