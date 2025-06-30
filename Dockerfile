@@ -15,9 +15,13 @@ FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
+# Installing libraries required for reports
+RUN apt-get update && apt-get install -y fontconfig libfreetype6 && rm -rf /var/lib/apt/lists/*
+
 # Copy the jar from the builder stage
 COPY --from=builder /app/target/*.jar app.jar
 
+# Expose the internal port
 EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
