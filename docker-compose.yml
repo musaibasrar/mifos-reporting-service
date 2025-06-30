@@ -1,6 +1,5 @@
 version: '3.3'
 
-
 services:
   mifos_reporting:
     build:
@@ -8,9 +7,11 @@ services:
       dockerfile: Dockerfile
     container_name: mifos-reporting-service
     ports:
-      - "9001:8080"  # Map external port 8080 to internal port 8080
+      - "9001:8080"  # Map internal port 8080 to external port 9001 
     volumes:
       - mifos-reports-data:/data
+    networks:
+      - mrs-network
     environment:
       SPRING_APPLICATION_NAME: mifos_reporting
       SPRING_DATASOURCE_DRIVERCLASSNAME: org.h2.Driver
@@ -22,11 +23,16 @@ services:
       MIFOS_DB_PASSWORD: root
       MIFOS_DB_USERNAME: root
 
+networks:
+  mrs-network:
+    external: true
 
 volumes:
   mifos-reports-data:
+    external: true
 
 
+# Create a volume: docker volume create  mifos-reports-data
 #   /var/lib/docker/volumes/
 #  └── mifos-reports-data/
 #      └── _data/
