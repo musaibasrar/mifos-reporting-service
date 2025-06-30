@@ -1,0 +1,129 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="passbook_cover" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b79e77e3-13ea-4cf1-802c-fff9f4c3225d">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="mifos"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="account_no" class="java.lang.String"/>
+	<query language="sql"><![CDATA[SELECT
+    CONCAT(mc.firstname, ' ', mc.lastname) AS fullname,
+    mc.id AS client_id,
+    mc.mobile_no,
+    ma.address_line_1,
+    ma.address_line_2,
+    ma.town_village,
+    ma.county_district,
+    ms.account_no AS savings_account_no,
+    mc.account_no AS member_no,
+    mc.activation_date,
+    sp.name AS scheme_name
+FROM m_client mc
+JOIN m_savings_account ms ON ms.client_id = mc.id
+LEFT JOIN m_savings_product sp ON ms.product_id = sp.id
+LEFT JOIN m_client_address mca ON mca.client_id = mc.id
+LEFT JOIN m_address ma ON ma.id = mca.address_id
+WHERE ms.account_no = $P{account_no}
+
+
+
+
+]]></query>
+	<field name="fullname" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="fullname"/>
+		<property name="com.jaspersoft.studio.field.label" value="fullname"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+	</field>
+	<field name="client_id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="id"/>
+		<property name="com.jaspersoft.studio.field.label" value="client_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+	</field>
+	<field name="mobile_no" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="mobile_no"/>
+		<property name="com.jaspersoft.studio.field.label" value="mobile_no"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+	</field>
+	<field name="address_line_1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="address_line_1"/>
+		<property name="com.jaspersoft.studio.field.label" value="address_line_1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_address"/>
+	</field>
+	<field name="address_line_2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="address_line_2"/>
+		<property name="com.jaspersoft.studio.field.label" value="address_line_2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_address"/>
+	</field>
+	<field name="town_village" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="town_village"/>
+		<property name="com.jaspersoft.studio.field.label" value="town_village"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_address"/>
+	</field>
+	<field name="county_district" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="county_district"/>
+		<property name="com.jaspersoft.studio.field.label" value="county_district"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_address"/>
+	</field>
+	<field name="savings_account_no" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="account_no"/>
+		<property name="com.jaspersoft.studio.field.label" value="savings_account_no"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_savings_account"/>
+	</field>
+	<field name="member_no" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="account_no"/>
+		<property name="com.jaspersoft.studio.field.label" value="member_no"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+	</field>
+	<field name="activation_date" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="activation_date"/>
+		<property name="com.jaspersoft.studio.field.label" value="activation_date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_client"/>
+	</field>
+	<field name="scheme_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="name"/>
+		<property name="com.jaspersoft.studio.field.label" value="scheme_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="m_savings_product"/>
+	</field>
+	<title height="295">
+		<element kind="staticText" uuid="e9b83958-9445-49ab-b28e-80b942d6ae65" x="0" y="0" width="550" height="70" fontName="Times New Roman" fontSize="14.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Al-Zariya Credit Cum Consumers Co.Op.So.Ltd, Palanpur Dukan No. 07, Second Floor, AL - Hayat Complex, Dhalwas, Palanpur -385001, District - Banaskantha, Gujarat]]></text>
+		</element>
+		<element kind="textField" uuid="2404dc94-bf2e-4b86-bb50-86b4e7cb1e5f" x="0" y="140" width="250" height="15" fontName="Times New Roman" fontSize="12.0">
+			<expression><![CDATA["Account No: " + $F{savings_account_no}]]></expression>
+		</element>
+		<element kind="textField" uuid="6c9356d7-0be2-4e3e-b2f1-8460fbd2336c" x="0" y="156" width="250" height="15" fontName="Times New Roman" fontSize="12.0">
+			<expression><![CDATA["Name: " + $F{fullname}]]></expression>
+		</element>
+		<element kind="textField" uuid="ec8a2851-8ce7-4bc0-b4b8-95cf14b26020" x="0" y="170" width="250" height="30" fontName="Times New Roman" fontSize="12.0" textAdjust="StretchHeight">
+			<expression><![CDATA["Address: " +
+($F{address_line_1} == null ? "" : $F{address_line_1} + ", ") +
+($F{address_line_2} == null ? "" : $F{address_line_2} + ", ") +
+($F{town_village} == null ? "" : $F{town_village} + ", ") +
+($F{county_district} == null ? "" : $F{county_district})
+]]></expression>
+		</element>
+		<element kind="textField" uuid="e3777a19-e82d-4c52-9f4b-bfc9ea44a5d5" x="0" y="200" width="250" height="15" fontName="Times New Roman" fontSize="12.0">
+			<expression><![CDATA["Client No : " + $F{client_id}]]></expression>
+		</element>
+		<element kind="textField" uuid="23a4b63a-5145-43c1-b13f-7127f6e63c49" x="0" y="220" width="250" height="15" fontName="Times New Roman" fontSize="12.0">
+			<expression><![CDATA["Member No : " + $F{member_no}]]></expression>
+		</element>
+		<element kind="textField" uuid="73e64d7c-5100-4d84-99b1-c5089ae224d4" x="0" y="240" width="250" height="15" fontName="Times New Roman" fontSize="12.0">
+			<expression><![CDATA["Mobile No : " + $F{mobile_no}]]></expression>
+		</element>
+		<element kind="textField" uuid="f5b1e18f-03cd-464e-81ab-27b238f55cc4" x="0" y="260" width="250" height="15" fontName="Times New Roman" fontSize="12.0" pattern="dd/MM/yyyy">
+			<expression><![CDATA["Open Date : " + $F{activation_date}]]></expression>
+		</element>
+		<element kind="textField" uuid="3a55f8de-b8c2-45a2-a6ae-4968c68a1ae5" x="0" y="280" width="250" height="15" fontName="Times New Roman" fontSize="12.0" pattern="dd.MM.yyyy">
+			<expression><![CDATA["Date Of issue : " + new java.text.SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date())
+]]></expression>
+		</element>
+		<element kind="staticText" uuid="bd6a305f-2a80-4b83-a5f2-dcfe89145bcb" x="330" y="120" width="200" height="15" fontName="Times New Roman" fontSize="12.0">
+			<text><![CDATA[Society Contact No: 9898756310]]></text>
+		</element>
+		<element kind="textField" uuid="8b4008c2-cf23-415e-8cbf-a87d4e3fd06c" x="0" y="120" width="252" height="20" fontName="Times New Roman" fontSize="12.0">
+			<expression><![CDATA["Scheme: " + $F{scheme_name}
+]]></expression>
+		</element>
+		<element kind="staticText" uuid="b4ad3776-1fb0-42ff-ac64-da8df31238ea" x="330" y="142" width="214" height="18" fontName="Times New Roman" fontSize="12.0">
+			<text><![CDATA[Society Email: alzariya47915@gmail.com]]></text>
+		</element>
+	</title>
+</jasperReport>
