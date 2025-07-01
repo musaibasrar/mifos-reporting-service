@@ -72,38 +72,38 @@ ORDER BY mst.transaction_date ASC;
 		</groupFooter>
 	</group>
 	<columnHeader height="26">
-		<element kind="staticText" uuid="39b50509-f8b6-45b2-a2c1-55b7a1babddc" x="0" y="0" width="80" height="20" fontName="Times New Roman" bold="true">
+		<element kind="staticText" uuid="39b50509-f8b6-45b2-a2c1-55b7a1babddc" x="0" y="0" width="80" height="20" fontName="SansSerif" bold="true">
 			<text><![CDATA[Date]]></text>
 		</element>
-		<element kind="staticText" uuid="f22433b2-ce68-4990-a602-f40b8115cca4" x="80" y="0" width="200" height="20" fontName="Times New Roman" bold="true">
+		<element kind="staticText" uuid="f22433b2-ce68-4990-a602-f40b8115cca4" x="80" y="0" width="200" height="20" fontName="SansSerif" bold="true">
 			<text><![CDATA[Particulars]]></text>
 		</element>
-		<element kind="staticText" uuid="09125c62-ce77-4c36-84e9-5a419c314027" x="280" y="0" width="80" height="20" fontName="Times New Roman" bold="true">
+		<element kind="staticText" uuid="09125c62-ce77-4c36-84e9-5a419c314027" x="280" y="0" width="80" height="20" fontName="SansSerif" bold="true">
 			<text><![CDATA[Withdrawal]]></text>
 		</element>
-		<element kind="staticText" uuid="1b6a4680-b834-4852-aa58-6a6643328714" x="360" y="0" width="80" height="20" fontName="Times New Roman" bold="true">
+		<element kind="staticText" uuid="1b6a4680-b834-4852-aa58-6a6643328714" x="360" y="0" width="80" height="20" fontName="SansSerif" bold="true">
 			<text><![CDATA[Deposit]]></text>
 		</element>
-		<element kind="staticText" uuid="9de25af9-2515-40ca-838b-121245afe129" x="440" y="0" width="100" height="20" fontName="Times New Roman" bold="true">
+		<element kind="staticText" uuid="9de25af9-2515-40ca-838b-121245afe129" x="440" y="0" width="100" height="20" fontName="SansSerif" bold="true">
 			<text><![CDATA[Balance]]></text>
 		</element>
 	</columnHeader>
 	<detail>
 		<band height="31" splitType="Prevent">
-			<element kind="textField" uuid="8c6416f1-7a76-4fe5-b139-97a73fcf5fbf" x="0" y="0" width="80" height="20" fontName="Times New Roman">
+			<element kind="textField" uuid="8c6416f1-7a76-4fe5-b139-97a73fcf5fbf" x="0" y="0" width="80" height="20" fontName="SansSerif">
 				<expression><![CDATA[$F{txn_date}]]></expression>
 			</element>
-			<element kind="textField" uuid="b54b0552-2eb6-45e8-9842-2345e4d361d8" x="80" y="0" width="200" height="20" fontName="Times New Roman">
+			<element kind="textField" uuid="b54b0552-2eb6-45e8-9842-2345e4d361d8" x="80" y="0" width="200" height="20" fontName="SansSerif">
 				<expression><![CDATA[$F{particulars}
 ]]></expression>
 			</element>
-			<element kind="textField" uuid="eae45de6-7cd3-42d0-bb18-a58447bd1368" x="280" y="0" width="80" height="20" fontName="Times New Roman" pattern="#,##0.00">
+			<element kind="textField" uuid="eae45de6-7cd3-42d0-bb18-a58447bd1368" x="280" y="0" width="80" height="20" fontName="SansSerif" pattern="#,##0.00">
 				<expression><![CDATA[$F{withdrawal_amount}]]></expression>
 			</element>
-			<element kind="textField" uuid="48506919-0aed-4bf3-bc75-980b7e62ccdc" x="360" y="0" width="80" height="20" fontName="Times New Roman" pattern="#,##0.00">
+			<element kind="textField" uuid="48506919-0aed-4bf3-bc75-980b7e62ccdc" x="360" y="0" width="80" height="20" fontName="SansSerif" pattern="#,##0.00">
 				<expression><![CDATA[$F{deposit_amount}]]></expression>
 			</element>
-			<element kind="textField" uuid="6745c279-c624-4fb0-86d4-375ba34dbe56" x="440" y="0" width="100" height="20" fontName="Times New Roman" pattern="#,##0.00">
+			<element kind="textField" uuid="6745c279-c624-4fb0-86d4-375ba34dbe56" x="440" y="0" width="100" height="20" fontName="SansSerif" pattern="#,##0.00">
 				<expression><![CDATA[$F{running_balance_derived}]]></expression>
 			</element>
 		</band>
