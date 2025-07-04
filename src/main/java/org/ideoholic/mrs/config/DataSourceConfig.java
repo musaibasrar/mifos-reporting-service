@@ -21,6 +21,6 @@ public class DataSourceConfig {
 	@Bean(name = "reportDataSource")
 	@ConfigurationProperties(prefix = "report.datasource")
 	public DataSource reportDataSource() {
-		return DataSourceBuilder.create().build();
+		return DataSourceBuilder.create().type(com.zaxxer.hikari.HikariDataSource.class).build();
 	}
 }

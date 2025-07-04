@@ -27,3 +27,9 @@ report:
         jdbc-url: ${MIFOS_DB_JDBC_URL:jdbc:mariadb://localhost:3306/mifos}
         password: ${MIFOS_DB_PASSWORD:root}
         username: ${MIFOS_DB_USERNAME:root}
+        type: com.zaxxer.hikari.HikariDataSource
+        maximum-pool-size: 20           # max number of connections
+        minimum-idle: 5                 # minimum idle connections
+        connection-timeout: 300000      # 300 seconds - 5 mins (in ms)
+        idle-timeout: 600000            # 10 minutes
+        max-lifetime: 1800000           # 30 minutes
