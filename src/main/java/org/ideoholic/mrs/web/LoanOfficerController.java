@@ -21,7 +21,7 @@ public class LoanOfficerController {
     public Map<String, List<LoanOfficer>> getLoanOfficers() {
         List<LoanOfficer> loanOfficers = loanOfficerService.getAllLoanOfficers();
         Map<String, List<LoanOfficer>> response = new HashMap<>();
-        response.put("list", loanOfficers);
+        response.put("loanOfficers", loanOfficers);
         return response;
     }
 }
